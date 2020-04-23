@@ -1,0 +1,391 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Welch!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Első osztályom</title>
+        <para>
+            Valósítsd meg C++-ban és Java-ban az módosított polártranszformációs algoritmust! A matek háttér 
+            teljesen irreleváns, csak annyiban érdekes, hogy az algoritmus egy számítása során két normálist
+            számol ki, az egyiket elspájzolod és egy további logikai taggal az osztályban jelzed, hogy van vagy
+            nincs eltéve kiszámolt szám.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch</filename>
+            </link>,                           
+        </para>
+        <para>
+            A programunk C++-ban, ami három részből áll:
+        </para>
+<programlisting language="c"><![CDATA[##ifndef POLARGEN__H
+#define POLARGEN__H
+
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+
+class PolarGen
+{
+public:
+  PolarGen ()
+  {
+    nincsTarolt = true;
+    std::srand (std::time (NULL));
+  }
+   ~PolarGen ()
+  {
+  }
+  double kovetkezo ();
+
+private:
+  bool nincsTarolt;
+  double tarolt;
+
+};
+
+#endif
+]]></programlisting>
+    <para>
+        Láthatjuk, hogy elsősorban egy header fájl-ra lesz szükségünk.
+    </para>
+    <para>
+        Véletlen szám sorsoláshoz szükség van bizonyos előre megírt kódokra, melyeket #include-olni kell ahhoz, hogy a feladatot megoldhassuk. A kódunk elején a sorsolás egyik részét végző rand() függvény használatához a következő sort kell beilleszteni a kódunk elejére: <command> #include cstdlib </command>.
+    </para>
+<programlisting language="c"><![CDATA[#include "polargen.h"
+
+double
+PolarGen::kovetkezo ()
+{
+  if (nincsTarolt)
+    {
+      double u1, u2, v1, v2, w;
+      do
+    {
+      u1 = std::rand () / (RAND_MAX + 1.0);
+      u2 = std::rand () / (RAND_MAX + 1.0);
+      v1 = 2 * u1 - 1;
+      v2 = 2 * u2 - 1;
+      w = v1 * v1 + v2 * v2;
+    }
+      while (w > 1);
+
+      double r = std::sqrt ((-2 * std::log (w)) / w);
+
+      tarolt = r * v2;
+      nincsTarolt = !nincsTarolt;
+
+      return r * v1;
+    }
+  else
+    {
+      nincsTarolt = !nincsTarolt;
+      return tarolt;
+    }
+}
+
+]]></programlisting>
+    <para>
+        A <command> polargen.cpp </command> fájlban valósítjuk meg a polártranszformációt. Ehhez <command> include </command>-olnunk kell az előbbi <command> polargen.h </command> header fájlt.
+        Ebben az esetben akkor fogunk új számot készíteni, ha nincs tárolt számunk a tárolt változóban.
+    </para>
+<programlisting language="c"><![CDATA[#include <iostream>
+#include "polargen.h"
+#include "polargen.cpp"
+
+int
+main (int argc, char **argv)
+{
+  PolarGen pg;
+
+  for (int i = 0; i < 10; ++i)
+    std::cout << pg.kovetkezo () << std::endl;
+
+  return 0;
+}
+
+
+]]></programlisting>
+    <para>
+        Ezt a fájlt fogjuk fordítani és futtatni. A for ciklus miatt 10x fog lefutni a programunk, amely 10 szám kiiratását fogja eredményezni.
+    </para>
+    <para>
+        A futtatás után ez fogad minket:
+    </para>
+    <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Welch/polargen.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    <para>
+    </para>
+
+    <para>
+        És akkor jöjjön a Java programunk.
+    </para>
+<programlisting language="c"><![CDATA[public class polargen {
+    boolean nincsTarolt = true;
+    double tarolt;
+    public polargen() {
+
+        nincsTarolt = true;
+
+    }
+    public double kovetkezo() {
+        if(nincsTarolt) {
+            double u1, u2, v1, v2, w;
+            do {
+                u1 = Math.random();
+                u2 = Math.random();
+
+                v1 = 2*u1 - 1;
+                v2 = 2*u2 - 1;
+
+                w = v1*v1 + v2*v2;
+
+            } while(w > 1);
+
+            double r = Math.sqrt((-2*Math.log(w))/w);
+
+            tarolt = r*v2;
+            nincsTarolt = !nincsTarolt;
+
+            return r*v1;
+
+        } else {
+            nincsTarolt = !nincsTarolt;
+            return tarolt;
+        }
+    }
+
+    public static void main(String[] args) {
+        polargen g = new polargen();
+        for(int i=0; i<10; ++i)
+            System.out.println(g.kovetkezo());
+    }
+}
+
+]]></programlisting>
+    <para>
+        A Sun programozói is hasonló képpen oldották meg a random függvényt. A polár metódussal főként az úgynevezett nextGaussian() függvény dolgozik, ami a Random.java fájlból származtatható.
+    </para>
+    <para>
+        A program futtatása után ez fogad minket:
+    </para>
+    <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Welch/polargenjava.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>        
+
+    <section>
+        <title>LZW</title>
+        <para>
+            Valósítsd meg C-ben az LZW algoritmus fa-építését!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/z3a19a_from_scratch.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/z3a19a_from_scratch.cpp</filename>
+            </link>                   
+        </para>
+        <para>
+        	A program fordítását és futtatását követően láthatjuk, hogy a fánk felépült:
+        </para>
+    <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Welch/lzwfa.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>        
+        
+    <section>
+        <title>Fabejárás</title>
+        <para>
+            Járd be az előző (inorder bejárású) fát pre- és posztorder is!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/z3a18a2_from_scratch.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/z3a18a2_from_scratch.cpp</filename>
+            </link>             
+        </para>
+        <para>
+        	Preorder bejárás = gyökér -> baloldali részfa -> jobboldali részfa
+        </para>
+        <para>
+			Postorder = gyökér -> jobboldali részfa -> baloldali részfa
+		</para>
+		<para>
+			Inorder = bal oldali részfa -> gyökér -> jobboldali részfa
+        </para>
+        <para>
+        	Program futtatása:<command> ./z2 -o </command> [o/r] ahol az o postorder, az r pedig preorder
+			bejárást jelent.
+        </para>
+    </section>        
+                        
+    <section>
+        <title>Tag a gyökér</title>
+        <para>
+            Az LZW algoritmust ültesd át egy C++ osztályba, legyen egy Tree és egy beágyazott Node
+            osztálya. A gyökér csomópont legyen kompozícióban a fával!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/z3a19a_from_scratch.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/z3a19a_from_scratch.cpp</filename>
+            </link>                                  
+        </para>
+        <para>
+        A már megírt programban, a gyökér, már alápjáraton kompozícióban van a fával.
+       	</para>
+    </section>        
+                
+    <section>
+        <title>Mutató a gyökér</title>
+        <para>
+            Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
+            fával!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása:  <link xlink:href="Welch/z3a19a_from_scratch.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/z3a19a_from_scratch.cpp</filename>
+            </link>   
+        </para>
+        <para>
+           Mi <function>root</function>-ot alapból pointerrel írtuk meg, 
+        </para>
+        <para>
+            <programlisting language = "c++">
+    		Node *root;
+            </programlisting>
+            A gyoker és a fa mutatónkat új tárterületre állítjuk, a foglalt 
+            területet fel szabadítjuk.
+            <programlisting language="c++"><![CDATA[
+template <typename ValueType>
+void BinRandTree<ValueType>::deltree(Node *node){
+    
+    if(node){
+        
+        deltree(node->leftChild());
+        deltree(node->rightChild());
+        delete node;
+    }
+    
+    
+}]]></programlisting>
+            A gyökér mutató lett, tehát a gyökér álltal mutatott csomópont 
+            gyermekére kell meghívnunk a szabadit függvényt.
+            A gyokér által mutatott területet a  <function>delete()</function>-el szabadítjuk fel.
+            Töröljük mindenhol a <![CDATA[&]]> címképző operátort, azaz mostmár 
+            nem a gyökér memóriacímét kell átadni, hanem a gyökeret.   
+        </para>
+    </section>                     
+
+    <section>
+        <title>Mozgató szemantika</title>
+        <para>
+            Írj az előző programhoz mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/z3a19a_from_scratch.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/z3a19a_from_scratch.cpp</filename>
+            </link> 
+        </para>
+        <para>
+        	A megírt programunkban a <command> move assign </command>-on belüli swap végett a mozgató konstruktor, a mozgató értékadásra van alapozva.
+        </para>
+<programlisting language="c++"><![CDATA[
+   BinRandTree(BinRandTree && old){
+        std::cout << "BT move ctor" << std::endl;
+
+        root = nullptr;
+        *this = std::move(old);
+        
+    }
+    BinRandTree & operator = (BinRandTree && old){
+        std::cout << "BT move assign" << std::endl;
+        
+        std::swap(old.root, root);
+        std::swap(old.treep, treep);
+        
+        return *this;
+
+    }]]></programlisting>
+</section>
+    <section>
+        <title>Vörös Pipacs Pokol/5x5x5 ObservationFromGrid</title>
+        <para>
+            Megoldás forrása: <link xlink:href="Welch/red_flower.py">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/red_flower.py </filename> 
+            </link>
+        </para>
+<programlisting language="c++"><![CDATA[
+    <Grid name="nbr5x5">
+        <min x="-2" y="-2" z="-2"/>
+        <max x="2" y="2" z="2"/>
+    </Grid>
+]]></programlisting>
+        <para>
+        	Első sorban módosítanunk kell az <command>nb4tf4i_d.xml</command> fájlon.
+        </para> 
+        <para>
+        	Ezután már mehet is a program és szedhetjük a pipacsokat 5x5x5-ös látásmódban.
+        </para> 
+<programlisting language="c++"><![CDATA[
+                if "LineOfSight" in observations:
+                    lineOfSight = observations["LineOfSight"]
+                    self.lookingat = lineOfSight["type"]
+                #print("    Steve's <): ", self.lookingat)
+
+                if self.lookingat == "red_flower":
+                    print ("Itt a pipacs, hol a pipacs?")
+                    self.agent_host.sendCommand("move 0")
+                    time.sleep(.5)
+                    self.agent_host.sendCommand("attack 1")
+                    time.sleep(.1)
+
+                if self.akadaly == self.uthossz:
+                    self.agent_host.sendCommand("turn 1")
+                    time.sleep(.2)
+                    self.agent_host.sendCommand("move 0")
+                    self.akadaly = 0
+                    self.akadaly2 = self.akadaly2 + 1
+
+                if self.akadaly2 > 4:
+                    self.agent_host.sendCommand("jumpstrafe -1")
+                    time.sleep(.1)
+                    self.agent_host.sendCommand("strafe -1")
+                    time.sleep(.1)
+                    self.akadaly2 = 0
+                    self.adakaly = 0
+                    self.uthossz = self.uthossz + 5
+
+            self.agent_host.sendCommand("move 1")
+            time.sleep(.1)
+            self.akadaly = self.akadaly + 1
+]]></programlisting>         
+    </section>                                                                                                                                                                                                                                                                                                                
+</chapter>                

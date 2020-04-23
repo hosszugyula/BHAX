@@ -1,0 +1,114 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gutenberg!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+        <cover>
+            <para>
+                Programozás tankönyvek rövid olvasónaplói.
+            </para>
+        </cover>
+    </info>
+    <section>
+        <title>Programozási alapfogalmak: </title>
+        <para>         
+ A számítógépek programozási nyelvén belül három szintet különböztetetünk meg: van a gépi nyel; az assembly színtű nyelv; és a magas szintű nyelv. A magas szintű nyelveken írt programokat forrásprogramoknak, vagy forrásszövegeknek nevezzük. A forrásszövegek felépítésére vonatkozó formai (nyelvtani) szabályok összességét szintaktikai szabályoknak hívjuk. A szemantikai szabályokat a tartalmi, értelmezési, jelentésbeli szabályok alkotják. Ezen szabályok összessége határozza meg a magas szintű programozási nyelveket. 
+A magas szintű nyelven megírt forrászövegből fordítóprogramos vagy az interpreteres technikával elkell jutni  a gépi nyelvű programokhoz, hogy azt a processzor, az adott gépi nyelven írt programot végre tudja hajtani. 
+A fordítóprogram a magas szintű programozási nyelven megírt forrásszövegből, gépi kódú tárgyprogramot hoz létre. Általánosabb értelemben tetszőleges nyelvről tetszőleges nyelvre fordít. Ennek menete a lexikális elemzés, szintaktikai elemzés, szemantikai elemzés majd végső soron a kódgenerálás. Ilyen tárgyprogramot csak a szintaktikailag helyes forrásprogramból lehet előállítani. 
+A C nyelv például egy olyan nyelv, amely egy előfordító segítségével elsősorban a forrásprogramból egy adott nyelvű forrásprogramot generál, ami már feldolgozható a nyelv fordítójával.
+Az interpreter technika első három lépése azonos a fordítóprogram első három lépésével, viszont nem készít tárgyprogramot.
+Egyes programnyelvek vagy egyiket vagy a másikat használják, viszont léteznek olyanok amely mindkettőt alkalmazzák.
+Minden programnyelvnek megvannak a sajátosságai, amit hivatkozási nyelvnek nevezünk. Definiálva vannak a szintaktikai, szemantikai szabályok. A szintaktikát formálisan, a szemantikát általában természetes emberi nyelven adják meg. Ezek mellett léteznek implementációk. Ezekkel viszont az a probléma, hogy egymással és a hivatkozási nyelvvel nem kompatibilesek.
+</para>
+	<para>
+     Karakterkészlet: 
+    </para>
+    <para>
+A programok forráskódjának legkisebb alkotóelemei a karakterek. A karakterkészlet alapvető a forráskód összeállításnál. Ezek a következők: lexikális egységek, szintaktikai egységek, utasítások, programegységek, fordítási egységek, program. Minden nyelv rendelkezik saját karakterkészlettel. A karakterek kategóriái általában a következők: betűk, számjegyek, egyéb.. . Minden programnyelv az angol ABC betűit használja.
+"A lexikális egységek a program szövegének azon elemei, melyeket a fordító a lexikális
+elemzés során felismer és tokenizál."
+"A többkarakteres szimbólumok olyan karaktersorozatok, amelyeknek jelentést tulajdonít az adott nyelv és ezek csak ebben az értelemben használhatóak."
+</para>
+	<para>
+    Lexikális egységek:
+	</para>
+<para>
+"A lexikális egységek a program szövegének azon elemei, melyeket a fordító a lexikális
+elemzés során felismer és tokenizál."
+"A többkarakteres szimbólumok olyan karaktersorozatok, amelyeknek jelentést tulajdonít az adott nyelv és ezek csak ebben az értelemben használhatóak."
+</para>
+	<para>
+    Szimbolikus nevek:
+	</para>
+<para>
+Azonosító: Arra használjuk, hogy programozás közben, saját eszközeinket megnevezzük velük, majd erre később tudjunk hivatkozni a szövegben.
+
+Kulcsszó: Olyan karaktersorozat, amelynek a nyelv már alapjáraton tulajdonít jelentést, és ezt a programozó nem változtathatja meg. Ezek általában hétköznapi angol szavak.
+
+Standard azonosító: Olyan karaktersorozat, mint a kulcsszó, viszont a programozó ezt megváltoztathatja.
+
+Címke: "Az eljárásorientált nyelvekben a végrehajtható utasítások megjelölésére szolgál, azért, hogy a program egy másik pontjáról hivatkozni tudjunk rájuk. Bármely végrehajtható utasítás megcímkézhető."
+
+Megjegyzés: Olyan programozási eszköz, amely segítségével a programozó egy karaktersorozatot helyes el a kódban, ami a szöveg olvasójának szól. Egyszerűen egy magyarázó eszköz.
+
+Literálok (Konstansok): Segítségével fix, explicit értékek építhetők be a programba. Két komponensük van: típus és érték.
+</para>
+	</section>            
+    <section>
+        <title>Programozás bevezetés</title>
+        <para>                
+            <citation>KERNIGHANRITCHIE</citation>
+        </para>
+        <para>
+2.fejezet: Típusok, operátorok és kifejezések
+
+Ebben a fejezetben változókról, állandókról, deklarációkról,  operátorokról,  típuskonverziókról olvashatunk. A c-ben csak néhány alapvető adattípus van: a char, az int, a float és a double.  Használat előtt minden változót deklarálni kell. Ha egy kifejezésben különbözô típusú operandusok fordulnak elő, a kifejezés kiértékeléséhez az operandusokat azonos típusúakká kell alakítani. A C nyelv tartalmaz két szokatlan operátort, amelyekkel változók inkrementálhatók és dekrementálhatók. A ++ inkrementáló operátor operandusához 1 -et ad hozzá, a—dekrementáló operátor pedig 1 -et von le belőle. A C nyelvben több  bitmanipulációs operátor van; ezek a float és double típusú változókra nem alkalmazhatók.
+        </para>
+        <para>
+3.fejezet: Vezérlési szerkezetek
+
+Ebben a fejezetben a C nyelv vezérlésátadó utasításairól olvashatunk.
+
+A kifejezések utasítássa vállnak, ha a kifejezés végére pontosvesszőt teszünk. Részletesen olvashatunk az if-else utasításokról. A switch utasításról is olvashatunk, amely a programelágaztatás eszköze. A while-for utasításokról olvashatunk, melynek ha értéke nem nulla, akkor végrehajtja az utasítást és kiértékeli a kifejezést. vizsgálja. A következő C-beli ciklusfajta, a do-while a vizsgálatot a ciklus végén, a ciklustörzs végrehajtása után végzi el; a törzs tehát legalább egyszer mindenképpen végrehajtódik. A fejezet végén olvashatunk a break utasításról, a continue és a goto utasításokról. 
+        </para>
+        <para>
+4.fejezet: Függvények és programstruktúra
+
+C nyelvet úgy tervezték meg, hogy a függvények hatékonyak és könnyen használhatók legyenek. A C programok általában sok kis méretű függvényt tartalmaznak. A program lényegében egyedi függvénydefiníciók halmaza. A függvények közötti kommunikáció argumentumokkal és a függvények által visszaadott értékekkel történik, de történhet külsô változókon keresztül is. A meghívott függvények a return utasításs adhatnak visszatérési értéket. Olvashatunk továbbá Header álományok vizsgálatáról, speciális változótípusokról, blokkstruktúráról, inicializálásról és a rekurzióról.
+        </para>                    
+    </section>        
+    <section>
+        <title>Szoftverfejlesztés C++ nyelven</title>
+        <para>                
+Ebben a fejezetben a C++ programozási nyelv elődjének, a C nyelvnek egy továbbfejlesztéséről olvashatunk. A továbbfejlejsztett C nyelvnek a célja, hogy a C nyelvben előforduló "veszélyesnek" mondható elemeket lecserélik biztonságosabbra. Egy-két újítás csak a kényelem érdekében ment végbe (átláthatóbb programkód, stb...). Fontos tudni, hogy ebben a fejezetben előforduló programok csak a C++ fordítóval fordulnak le.
+Olvashatunk a függvényparaméterek és visszatérési értékekről. Például a C nyelvben, ha egy függvényt üres paraméterlistával definiálunk, akkor az tetszőleges számú paraméterrel hívható. A C++ nyelvben ez az "üresség" a void paraméter megadásával ekvivalens, vagyis a függvénynek nincs paramétere. A függvény visszatérési típusának meg nem adásakor a C nyelv és C++ nyelv eltérően viselkedik.
+A szabványos C++ nyelvben a main függvénynek két formája létezik: a paraméter nélküli, valamint a paraméteres(argc paraméter, argv paraméter).
+A C++ nyelvben bevezették a bool típust, amely logikai (igaz/hamis) értéket képes visszaadni. A C nyelvben ilyen értékek visszaadására az int vagy enum típusú kifejezések képesek. Ezen típus bevezetésével a forráskód átláthatóbb/olvashatóbbá vált.
+A C++ nyelvben egy változódeklaráció olyan helyen is szerepelhet, ahol utasítás állhat.
+Azt tudni kell, hogy egy C nyelvű megoldás használható C++ nyelvben is, mivel a C++ visszafelé kompatibilis a C-vel.
+A C++ nyelvben az operátorok a helyfoglalás mellett meghívják a konstruktort és a destruktort. C++ nyelvben a try-catch függvényt használjuk kivételkezeléskor, valamint makrók helyett konstansokat használunk.
+        </para>
+    </section>
+     <section>
+        <title>Bevezetés a Pythonba</title>
+        <para>                
+         A Python egy magasszintű programozási nyelv, mégis a szkriptnyelvek családjába szoktál sorolni. Tudni kell róla, hogy a nyelv elsajátítása egyszerű, és komplex algoritmusok is könnyen leírhatóak vele. A C nyelvekkel szemben nagy előnye, hogy bő a standard könyvtára. Mivel interpretert használ, a terminálból rögtön tudjuk futtatni a megírt kódunkat.
+         </para>
+         <para> 
+         Behúzásalapú a szintaktikája, nem szükséges <command> ; </command> a sorok végére, valamint egy kifejezés végét egy üres blokk jelöli. A kulcsszavak tipikusan angol szavak ebben a nyelvben. Kommentek elhelyezésére a <command> # </command> jelet használjuk.
+     	</para>
+     	<para>
+         Deklaráláskor megadnunk sem kell a típusokat, ezt az interpreter feldolgozza. Az adattípusok a következől: stringek, számok, listák, szótárak, ennesek. 
+     	</para>
+     	<para>
+     	 Értékadás a <command> = </command> jel segítségével megy végbe. Itt is léteznek lokális és globális változók. Ha egy változót egy függvényen belül hozunk létre lokális lesz, de ha alkalmazzuk a <command> global </command> előtagot akkor globálisként fogja tekinteni.
+     	</para>
+     	<para>
+     	  A <command> print </command> függvény a terminálunkra iratja ki a kifejezést. Az elágazásokkor az <command> if/else/elif </command> kulcsszavakat használjuk. és a kifejezés után <command> :</command>-ot használunk.
+     	</para>
+     	<para>
+  		   Címkéket is alkalmazhatunk a <command> label </command> kifejezéssel, majd a <command> goto </command> kulcsszóval ugorhatunk oda. A függvények deklarálásához a <command> def </command> kulcsszót használjuk.
+     	</para>
+    </section>
+</chapter>                

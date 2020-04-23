@@ -1,0 +1,654 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Caesar!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title><type>double **</type> háromszögmátrix</title>
+        <para>
+            Írj egy olyan <function>malloc</function> és <function>free</function>
+            párost használó C programot, amely helyet foglal
+            egy alsó háromszög mátrixnak a szabad tárban!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/1MRTuKwRsB0">https://youtu.be/1MRTuKwRsB0</link>,
+            <link xlink:href="https://youtu.be/RKbX5-EWpzA">https://youtu.be/RKbX5-EWpzA</link>.
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Caesar/tm.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Caesar/tm.c</filename>
+            </link> 
+        </para>
+        <para>
+            Itt a C nyelv egyik nagy előnye mutatkozik meg, ami a dinamikus
+            memóriakezelés. Ebben a példában létrehozunk egy duble ** háromszögmátrixot, 
+            ami lényegében egy két dimenziós tömb (C-ben a <code>[]</code> jelek használata a
+            tömbök kezelésére csupán egy fordító adta kényelem, hogy ne kelljen
+            mindig mutató-, és cím aritmetikával foglalkozunk).A különbség itt
+            az lesz, hogy nem mondjuk meg előre, hogy hány
+            elemű tömbjeink lesznek, hanem azokat majd dinamikusan
+            foglaljuk le.
+        </para>
+        <programlisting language="c"><![CDATA[#include <stdio.h>
+#include <stdlib.h>
+
+int
+main ()
+{
+    int nr = 5;
+    double **tm;
+
+    if ((tm = (double **) malloc (nr * sizeof (double *))) == NULL)
+    {
+        return -1;
+    }
+
+    for (int i = 0; i < nr; ++i)
+    {
+        if ((tm[i] = (double *) malloc ((i + 1) * sizeof (double))) == NULL)
+        {
+            return -1;
+        }
+
+    }
+
+    for (int i = 0; i < nr; ++i)
+        for (int j = 0; j < i + 1; ++j)
+            tm[i][j] = i * (i + 1) / 2 + j;
+
+    for (int i = 0; i < nr; ++i)
+    {
+        for (int j = 0; j < i + 1; ++j)
+            printf ("%f, ", tm[i][j]);
+        printf ("\n");
+    }
+
+    tm[3][0] = 42.0;
+    (*(tm + 3))[1] = 43.0;	// mi van, ha itt hiányzik a külső ()
+    *(tm[3] + 2) = 44.0;
+    *(*(tm + 3) + 3) = 45.0;
+
+    for (int i = 0; i < nr; ++i)
+    {
+        for (int j = 0; j < i + 1; ++j)
+            printf ("%f, ", tm[i][j]);
+        printf ("\n");
+    }
+
+    for (int i = 0; i < nr; ++i)
+        free (tm[i]);
+
+    free (tm);
+
+    return 0;
+}]]></programlisting>
+        <figure>
+            <title>A <type>double **</type> háromszögmátrix a memóriában</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/doublecscs.png" scale="50" />
+                </imageobject>
+                <textobject>
+                    <phrase>A <type>double **</type> háromszögmátrix a memóriában</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>                             
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>            
+    </section>        
+    <section>
+        <title>C EXOR titkosító</title>
+        <para>
+            Írj egy EXOR titkosítót C-ben!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:<link xlink:href="Caesar/exor.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/exor.c</filename>
+            </link>                
+        </para>
+<programlisting language="c"><![CDATA[#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+#define MAX_KULCS 100
+#define BUFFER_MERET 256
+
+int
+main (int argc, char **argv)
+{
+
+  char kulcs[MAX_KULCS];
+  char buffer[BUFFER_MERET];
+
+  int kulcs_index = 0;
+  int olvasott_bajtok = 0;
+
+  int kulcs_meret = strlen (argv[1]);
+  strncpy (kulcs, argv[1], MAX_KULCS);
+
+  while ((olvasott_bajtok = read (0, (void *) buffer, BUFFER_MERET)))
+    {
+
+      for (int i = 0; i < olvasott_bajtok; ++i)
+    {
+
+      buffer[i] = buffer[i] ^ kulcs[kulcs_index];
+      kulcs_index = (kulcs_index + 1) % kulcs_meret;
+
+    }
+
+      write (1, buffer, olvasott_bajtok);
+
+    }
+}
+]]></programlisting> 
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>            
+    </section>        
+    <section>
+        <title>Java EXOR titkosító</title>
+        <para>
+            Írj egy EXOR titkosítót Java-ban!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Ceasar/exor.java">
+ 			<filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/exor.java</filename>
+            </link>
+        </para>
+<programlisting language="java"><![CDATA[public class exor {
+    
+    public exor(String kulcsSzöveg,
+            java.io.InputStream bejövőCsatorna,
+            java.io.OutputStream kimenőCsatorna)
+            throws java.io.IOException {
+        
+        byte [] kulcs = kulcsSzöveg.getBytes();
+        byte [] buffer = new byte[256];
+        int kulcsIndex = 0;
+        int olvasottBájtok = 0;
+
+        while((olvasottBájtok =
+                bejövőCsatorna.read(buffer)) != -1) {
+            
+            for(int i=0; i<olvasottBájtok; ++i) {
+                
+                buffer[i] = (byte)(buffer[i] ^ kulcs[kulcsIndex]);
+                kulcsIndex = (kulcsIndex+1) % kulcs.length;
+                
+            }
+            
+            kimenőCsatorna.write(buffer, 0, olvasottBájtok);
+            
+        }   
+    }
+    
+    public static void main(String[] args) {
+        
+        try {
+            
+            new exor(args[0], System.in, System.out);
+            
+        } catch(java.io.IOException e) {
+            
+            e.printStackTrace();
+
+        }  
+    }
+}
+
+]]></programlisting> 
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>            
+    </section>        
+    <section xml:id="bhax-textbook-feladatok-caesar.EXOR-toro">
+        <title>C EXOR törő</title>
+        <para>
+            Írj egy olyan C programot, amely megtöri az első feladatban előállított titkos szövegeket!
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:<link xlink:href="Caesar/t2.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/t2.c</filename>
+            </link>                              
+        </para>
+<programlisting language="c"><![CDATA[#define MAX_TITKOS 4096
+#define OLVASAS_BUFFER 256
+#define KULCS_MERET 3 //
+#define _GNU_SOURCE
+
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+//toro
+double
+atlagos_szohossz (const char *titkos, int titkos_meret)
+{
+    int sz = 0;
+    for (int i = 0; i < titkos_meret; ++i)
+        if (titkos[i] == ' ')
+            ++sz;
+
+    return (double) titkos_meret / sz;
+}
+
+int
+tiszta_lehet (const char *titkos, int titkos_meret)
+{
+    // a tiszta szoveg valszeg tartalmazza a gyakori magyar szavakat
+    // illetve az átlagos szóhossz vizsgálatával csökkentjük a
+    // potenciális töréseket
+
+    double szohossz = atlagos_szohossz (titkos, titkos_meret);
+
+    return szohossz > 6.0 && szohossz < 9.0
+           && strcasestr (titkos, "hogy") && strcasestr (titkos, "nem")
+           && strcasestr (titkos, "az") && strcasestr (titkos, "ha");
+
+}
+
+void
+exor (const char kulcs[], int kulcs_meret, char titkos[], int titkos_meret)
+{
+
+    int kulcs_index = 0;
+
+    for (int i = 0; i < titkos_meret; ++i)
+    {
+
+        titkos[i] = titkos[i] ^ kulcs[kulcs_index];
+        kulcs_index = (kulcs_index + 1) % kulcs_meret;
+
+    }
+
+}
+
+int
+exor_tores (const char kulcs[], int kulcs_meret, char titkos[],
+            int titkos_meret)
+{
+
+    exor (kulcs, kulcs_meret, titkos, titkos_meret);
+
+    return tiszta_lehet (titkos, titkos_meret);
+
+}
+
+int
+main (void)
+{
+
+    char kulcs[KULCS_MERET];
+    char titkos[MAX_TITKOS];
+    char *p = titkos;
+    int olvasott_bajtok;
+
+    while ((olvasott_bajtok =
+                read (0, (void *) p,
+                      (p - titkos + OLVASAS_BUFFER <
+                       MAX_TITKOS) ? OLVASAS_BUFFER : titkos + MAX_TITKOS - p)))
+        p += olvasott_bajtok;
+
+    for (int i = 0; i < MAX_TITKOS - (p - titkos); ++i)
+        titkos[p - titkos + i] = '\0';
+    char str[3]={'p','l','a'};
+
+    for (int ii = 0; ii <= 2; ++ii) //
+       for (int li = 0; li <= 2; ++li)
+           for (int ki = 0; ki <= 2; ++ki)
+                                {
+                                    kulcs[0] = str[ii];
+                                    kulcs[1] = str[li];
+                                    kulcs[2] = str[ki];
+                                    
+                                    if (exor_tores (kulcs, KULCS_MERET, titkos, p - titkos))
+                                        printf
+                                        ("Kulcs: [%c%c%c]\nTiszta szoveg: [%s]\n", 
+                                         kulcs[ii], kulcs[li], kulcs[ki], titkos);
+
+                                    exor (kulcs, KULCS_MERET, titkos, p - titkos);
+                                }
+
+    return 0;
+}
+
+]]></programlisting> 
+        <screen><![CDATA[hosszu@hosszu-X550JK:~/exor$ time ./t2 <titkos.szoveg 
+Kulcs: [pla]
+Tiszta szoveg: [A neurális hálózat egyszerű egységekből áll, abban az értelemben, hogy belső állapotai leírhatók számokkal, ezek az aktivációs értékek. Mindegyik egység generál egy aktiválási értéktől függő kimeneti értéket (jelet). Az egységek csatlakoznak egymáshoz, mindegyik csatlakozás tartalmaz egy egyéni súlyt (szintén számokkal leírva, lásd súlyozás). Minden egység kiküldi a kimeneti értékét az összes többi egységnek, amelyekkel kimenő kapcsolatban vannak. A "rendszer" bemenetei lehetnek érzékszervek vagy mesterséges szenzorok, érzékelők adatai, míg kimenetei lehet a viselkedés, jel egy kimeneti neuronon, esetleg bármilyen mesterségesen megjelenített válasz egy kérdésre (amik neuron-hálózatok esetében persze mintázatok). Ezen kapcsolatok miatt az egység kimenete hatással van a másik egység aktivációjára. A kapcsolat bemeneti oldalán álló egység fogadja az értékéket, és azok súlyozásával kiszámolja az aktivációs értékét (összeszorozza a bemeneti jelet a hozzá tartozó bemenet súlyával, és veszi ezek összegét) A kimenetet az aktivációtól függően az aktivációs függvény határozza meg (pl az egység kimenetet generál –„tüzel”- ha az aktivizáció egy határérték felett van). Hogy ezek a jelek (értékek) elektrokémiai, elektromos, netán szimbolikus, ez a "megvalósítás" mikéntjétől (biológiai, hardver, szoftver) függ, de ez a működés alapelveit nem befolyásolja.
+
+Fontos megjegyezni, hogy a neuronok bár számításokat végeznek ugyan, de mégsem processzorok. A fő különbség a kettő között az, hogy amíg a processzorokat programozzák (szekvenciális utasítássorozatot adnak meg neki), addig a neuronokat tanítják (a súlymátrix értékeinek beállításával). A hálózat tanulási technikája lehet ellenőrzött, ill. nem ellenőrzött típusú tanulás. Az ellenőrzött tanulású N-hálók esetében a rendszer nagyszámú, előre megadott példa alapján tanul: speciális algoritmusokkal addig változtatja a neuronok közötti kapcsolatokat, míg a megadott bemenetek mindig a megadott kimeneteket "okozzák". Ilyenkor a hálózat a legtöbb esetben a csatlakozások súlyának módosításával tanul. A súlymódosítás során az ún. hibafüggvény eredményét veszi figyelembe. A hibafüggvény értékét sokféle módon lehet kiszámítani, a legegyszerűbb eset, amikor a kimeneti értékből kivonja a helyes kimeneti értéket.
+
+A nem ellenőrzött hálóknál leginkább a Kohonen önszervező térképet használják, amely hálózat azon feltételezések alapján működik, hogy a hálózat képes a teljes bemeneti mintakészlet közös jellemzőinek azonosítására.
+]
+
+real    0m0,009s
+user    0m0,009s
+sys 0m0,001s
+        
+]]></screen>            
+    </section>        
+    <section>
+        <title>Neurális OR, AND és EXOR kapu</title>
+        <para>
+            R
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/Koyw6IH5ScQ">https://youtu.be/Koyw6IH5ScQ</link>
+        </para>
+        <para>
+            Megoldás forrása:<link xlink:href="Caesar/neu.r.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/neu.r</filename>
+            </link>               
+        </para>
+        <para>
+            Itt az R programban egy neutrális hálót építünk fel, amely úgy 
+            működik, hogy meg adjuk milyen bemenetre, milyen kimenetet várunk, amit 
+            a program meg próbál mesterségesen utánozni
+        </para>
+<programlisting language="c"><![CDATA[library(neuralnet)
+
+a1    <- c(0,1,0,1)
+a2    <- c(0,0,1,1)
+OR    <- c(0,1,1,1)
+
+or.data <- data.frame(a1, a2, OR)
+
+nn.or <- neuralnet(OR~a1+a2, or.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
+
+plot(nn.or)
+
+compute(nn.or, or.data[,1:2])
+
+a1    <- c(0,1,0,1)
+a2    <- c(0,0,1,1)
+OR    <- c(0,1,1,1)
+AND   <- c(0,0,0,1)
+
+orand.data <- data.frame(a1, a2, OR, AND)
+
+nn.orand <- neuralnet(OR+AND~a1+a2, orand.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
+
+plot(nn.orand)
+
+compute(nn.orand, orand.data[,1:2])
+
+a1      <- c(0,1,0,1)
+a2      <- c(0,0,1,1)
+EXOR    <- c(0,1,1,0)
+
+exor.data <- data.frame(a1, a2, EXOR)
+
+nn.exor <- neuralnet(EXOR~a1+a2, exor.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
+
+plot(nn.exor)
+
+compute(nn.exor, exor.data[,1:2])
+
+a1      <- c(0,1,0,1)
+a2      <- c(0,0,1,1)
+EXOR    <- c(0,1,1,0)
+
+exor.data <- data.frame(a1, a2, EXOR)
+
+nn.exor <- neuralnet(EXOR~a1+a2, exor.data, hidden=c(6, 4, 6), linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
+
+plot(nn.exor)
+
+compute(nn.exor, exor.data[,1:2])
+
+]]></programlisting> 
+<screen><![CDATA[hosszu@hosszu-X550JK:~/exor$ Rscript neu.r 
+$neurons
+$neurons[[1]]
+       a1 a2
+[1,] 1  0  0
+[2,] 1  1  0
+[3,] 1  0  1
+[4,] 1  1  1
+
+
+$net.result
+            [,1]
+[1,] 0.001447521
+[2,] 0.999207152
+[3,] 0.999211911
+[4,] 0.999999999
+
+dev.new(): using pdf(file="Rplots1.pdf")
+$neurons
+$neurons[[1]]
+       a1 a2
+[1,] 1  0  0
+[2,] 1  1  0
+[3,] 1  0  1
+[4,] 1  1  1
+
+
+$net.result
+             [,1]         [,2]
+[1,] 4.688566e-05 2.935628e-09
+[2,] 9.999668e-01 1.372479e-03
+[3,] 9.999830e-01 1.306219e-03
+[4,] 1.000000e+00 9.983696e-01
+
+dev.new(): using pdf(file="Rplots2.pdf")
+$neurons
+$neurons[[1]]
+       a1 a2
+[1,] 1  0  0
+[2,] 1  1  0
+[3,] 1  0  1
+[4,] 1  1  1
+
+
+$net.result
+          [,1]
+[1,] 0.4999974
+[2,] 0.5000000
+[3,] 0.4999984
+[4,] 0.5000009
+
+dev.new(): using pdf(file="Rplots3.pdf")
+$neurons
+$neurons[[1]]
+       a1 a2
+[1,] 1  0  0
+[2,] 1  1  0
+[3,] 1  0  1
+[4,] 1  1  1
+
+$neurons[[2]]
+     [,1]       [,2]      [,3]       [,4]      [,5]       [,6]      [,7]
+[1,]    1 0.48641818 0.6080826 0.90763562 0.4322657 0.85943362 0.7405129
+[2,]    1 0.02231602 0.9870802 0.99945591 0.6407167 0.06454867 0.9963504
+[3,]    1 0.98842950 0.0650355 0.07275219 0.8688132 0.99983865 0.0627399
+[4,]    1 0.67307305 0.7740213 0.93617033 0.9394369 0.98590253 0.8649334
+
+$neurons[[3]]
+     [,1]         [,2]         [,3]         [,4]       [,5]
+[1,]    1 0.0122608635 0.0072254553 2.248167e-03 0.99273400
+[2,]    1 0.9106634387 0.0002723049 1.753846e-06 0.03689141
+[3,]    1 0.0002960452 0.9746515685 9.926152e-01 0.99999039
+[4,]    1 0.0087937749 0.0089005799 1.221435e-03 0.99729153
+
+$neurons[[4]]
+     [,1]       [,2]      [,3]       [,4]       [,5]       [,6]       [,7]
+[1,]    1 0.94754302 0.1054268 0.05411420 0.93313867 0.06513658 0.95204575
+[2,]    1 0.08917933 0.9393418 0.86223967 0.52277427 0.99126442 0.04913119
+[3,]    1 0.01923043 0.9820232 0.98832512 0.01755935 0.18381721 0.01835838
+[4,]    1 0.94843521 0.1039369 0.05313773 0.93374322 0.06338484 0.95296792
+
+
+$net.result
+             [,1]
+[1,] 0.0005830801
+[2,] 0.9997665196
+[3,] 0.9993741825
+[4,] 0.0005703819
+        
+]]></screen>   
+        <para>
+            Ezután megkapjuk a szimuláció eredményeit a következő ábrákon!
+            Ezek a következő helyen megtalálhatóak <link xlink:href="Caesar/Rplots,Rplots1,Rplots2,Rplots3">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/</filename>
+            </link> 
+        </para>            
+    </section>        
+    <section>
+        <title>Hiba-visszaterjesztéses perceptron</title>
+        <para>
+            C++
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Ceasar/prec.cpp">
+             <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/prec.cpp</filename>
+            </link>               
+        </para>
+        <para>
+            Ebben a feladatban a mandelbrot halmaz által generált kép rgb
+            kódjait áttesszük a neurális háló inputjába,
+            egy három rétegű hálót csinálunk és végül különböző számítások 
+            alapján kapunk a 3. rétegben egy számot.
+        </para>
+<programlisting language="c"><![CDATA[#include <iostream>
+#include "mlp.hpp"
+#include "png++/png.hpp"
+
+int main (int argc, char **argv)
+{
+    png::image <png::rgb_pixel> png_image (argv[1]);
+    int size = png_image.get_width()*png_image.get_height();
+    
+    Perceptron* p = new Perceptron(3, size, 256, 1);
+
+
+    double* image = new double[size];
+    
+    for(int i {0}; i<png_image.get_width(); ++i)
+         for(int j {0}; j<png_image.get_height(); ++j)
+            image[i*png_image.get_width()+j] = png_image[i][j].red;
+
+    double value = (*p) (image);
+
+    std::cout << value << std::endl;
+    
+    delete p;
+    delete [] image;
+    
+}
+
+
+]]></programlisting>             
+    </section>
+    <section>
+        <title>Vörös Pipacs Pokol/írd ki, mit lát Steve</title>
+        <para>
+            Megoldás videó:     
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Ceasar/whatcanisee.py">
+             <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/whatcanisee.py</filename>
+            </link>             
+        </para>
+<programlisting language="c"><![CDATA[Mit lát Steve??
+class Steve:
+    def __init__(self, agent_host):
+        self.agent_host = agent_host
+        self.x = 0
+        self.y = 0
+        self.z = 0        
+        self.yaw = 0
+        self.pitch = 0
+        self.akadaly = 0
+        self.akadaly2 = 0
+        self.uthossz = 9
+
+        self.agent_host.sendCommand("look 1")            
+        
+    def run(self):
+        world_state = self.agent_host.getWorldState()
+        # Loop until mission ends:
+        while world_state.is_mission_running:
+            if world_state.number_of_observations_since_last_state != 0:
+                
+                sensations = world_state.observations[-1].text
+                #print("    sensations: ", sensations)                
+                observations = json.loads(sensations)
+                nbr7x7x7 = observations.get("nbr7x7", 0)
+                print("    7x7x7 neighborhood of Steve: ", nbr7x7x7)
+                
+                if "Yaw" in observations:
+                    self.yaw = int(observations["Yaw"])
+                if "Pitch" in observations:
+                    self.pitch = int(observations["Pitch"])
+                if "XPos" in observations:
+                    self.x = int(observations["XPos"])
+                if "ZPos" in observations:
+                    self.z = int(observations["ZPos"])        
+                if "YPos" in observations:
+                    self.y = int(observations["YPos"])  
+                
+                #print("    Steve's Coords: ", self.x, self.y, self.z)        
+                #print("    Steve's Yaw: ", self.yaw)        
+                #print("    Steve's Pitch: ", self.pitch)    
+                                            
+                if "LineOfSight" in observations:
+                    lineOfSight = observations["LineOfSight"]
+                    self.lookingat = lineOfSight["type"]
+                #print("    Steve's <): ", self.lookingat)
+
+                if self.lookingat == "red_flower":
+                    print ("Itt a pipacs, hol a pipacs?")
+                    self.agent_host.sendCommand("move 0")
+                    time.sleep(.5)
+                    self.agent_host.sendCommand("attack 1")
+                    time.sleep(.1)
+
+                if self.akadaly == self.uthossz:
+                    self.agent_host.sendCommand("turn 1")
+                    time.sleep(.2)
+                    self.agent_host.sendCommand("move 0")
+                    self.akadaly = 0
+                    self.akadaly2 = self.akadaly2 + 1
+
+                if self.akadaly2 > 4:
+                    self.agent_host.sendCommand("jumpstrafe -1")
+                    time.sleep(.1)
+                    self.agent_host.sendCommand("strafe -1")
+                    time.sleep(.1)
+                    self.akadaly2 = 0
+                    self.adakaly = 0
+                    self.uthossz = self.uthossz + 5
+
+            self.agent_host.sendCommand("move 1")
+            time.sleep(.1)
+            self.akadaly = self.akadaly + 1
+                
+
+            world_state = self.agent_host.getWorldState()
+
+]]></programlisting> 
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
+            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
+        </para>            
+    </section>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+</chapter>                
