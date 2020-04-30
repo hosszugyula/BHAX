@@ -17,8 +17,108 @@
             Megoldás forrása: <link xlink:href="https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0">https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0</link> (/tensorflow-0.9.0/tensorflow/examples/tutorials/mnist/), <link xlink:href="https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol">https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol</link>  
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+        	Ma a Goggle által létrehozott Tensorflow-val fogunk megismerkedni, amit a tanulás fejlesztésének érdekében hoztak létre. Tudni kell, hogy a Tensorflow a Google Brain's második generációs rendszere. A <command> Version 1.0.0 </command>-t 2017, Február 11.-én jelentették be. A Tensorflow képes futtatni többmagos CPU-kon, illetve GPU-kon (persze az opcionális GPU-val, például CUDA kártyával). A tensorflow elérhető a 64 bites rendszereken (Linux, MacOs, Windows), és a mobil platformokkal is kompatibilis.
+        </para> 
+        <para>
+        	A jelenlegi programunk lényege az, hogy a kézírást felismerje, tehát rajzolunk egy felületre egy betűt vagy akármit és a programunknak fel kell/kéne ismernie hogy mi az. De mind ezt úgy hogy előtte úgymond "tanítjuk" a programunkat
+            tesztköröket futtatunk.
         </para>
+        <programlisting language="python"><![CDATA[# Import data
+from tensorflow.examples.tutorials.mnist import input_data
+
+import tensorflow as tf
+
+import matplotlib.pyplot
+
+
+FLAGS = None
+
+
+def readimg():
+    file = tf.read_file("sajat8am.png")
+    img = tf.image.decode_png(file)
+    return img
+
+def main(_):
+  mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
+
+  # Create the model
+  x = tf.placeholder(tf.float32, [None, 784])
+  W = tf.Variable(tf.zeros([784, 10]))
+  b = tf.Variable(tf.zeros([10]))
+  y = tf.matmul(x, W) + b
+
+  # Define loss and optimizer
+  y_ = tf.placeholder(tf.float32, [None, 10])
+
+  # The raw formulation of cross-entropy,
+  #
+  #   tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.nn.softmax(y)),
+  #                                 reduction_indices=[1]))
+  #
+  # can be numerically unstable.
+  #
+  # So here we use tf.nn.softmax_cross_entropy_with_logits on the raw
+  # outputs of 'y', and then average across the batch.
+  cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y, y_))
+  train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+
+  sess = tf.InteractiveSession()
+  # Train
+  tf.initialize_all_variables().run()
+  print("-- A halozat tanitasa")  
+  for i in range(1000):
+    batch_xs, batch_ys = mnist.train.next_batch(100)
+    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+    if i % 100 == 0:
+      print(i/10, "%")
+  print("----------------------------------------------------------")
+
+  # Test trained model
+  print("-- A halozat tesztelese")  
+  correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+  accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))  
+  print("-- Pontossag: ", sess.run(accuracy, feed_dict={x: mnist.test.images,
+                                      y_: mnist.test.labels}))
+  print("----------------------------------------------------------")
+  
+  print("-- A MNIST 42. tesztkepenek felismerese, mutatom a szamot, a tovabblepeshez csukd be az ablakat")
+  
+  img = mnist.test.images[42]
+  image = img
+
+  matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib.pyplot.cm.binary)
+  matplotlib.pyplot.savefig("4.png")  
+  matplotlib.pyplot.show()
+
+  classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+
+  print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+  print("----------------------------------------------------------")
+
+  print("-- A sajat kezi 8-asom felismerese, mutatom a szamot, a tovabblepeshez csukd be az ablakat")
+
+  img = readimg()
+  image = img.eval()
+  image = image.reshape(28*28)
+
+  matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib.pyplot.cm.binary)
+  matplotlib.pyplot.savefig("8.png")  
+  matplotlib.pyplot.show()
+
+  classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+
+  print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+  print("----------------------------------------------------------")
+
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data',
+                      help='Directory for storing input data')
+  FLAGS = parser.parse_args()
+  tf.app.run()
+]]>
+        </programlisting>  
     </section>        
 
 <!--
@@ -51,8 +151,199 @@
             Megoldás forrása:                
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+        	Itt olyan képeket készíthetünk a programunkkal, amit akkor látunk, amikor valamilyen pszichoaktív szer (kábítószer) hatása alatt látunk, például az LSD.
         </para>
+ <programlisting language="python"><![CDATA['''
+#Deep Dreaming in Keras.
+Run the script with:
+```python
+python deep_dream.py path_to_your_base_image.jpg prefix_for_results
+```
+e.g.:
+```python
+python deep_dream.py img/mypic.jpg results/dream
+```
+'''
+from __future__ import print_function
+
+from keras.preprocessing.image import load_img, save_img, img_to_array
+import numpy as np
+import scipy
+import argparse
+
+from keras.applications import inception_v3
+from keras import backend as K
+
+parser = argparse.ArgumentParser(description='Deep Dreams with Keras.')
+parser.add_argument('base_image_path', metavar='base', type=str,
+                    help='Path to the image to transform.')
+parser.add_argument('result_prefix', metavar='res_prefix', type=str,
+                    help='Prefix for the saved results.')
+
+args = parser.parse_args()
+base_image_path = args.base_image_path
+result_prefix = args.result_prefix
+
+# These are the names of the layers
+# for which we try to maximize activation,
+# as well as their weight in the final loss
+# we try to maximize.
+# You can tweak these setting to obtain new visual effects.
+settings = {
+    'features': {
+        'mixed2': 0.2,
+        'mixed3': 0.5,
+        'mixed4': 2.,
+        'mixed5': 1.5,
+    },
+}
+
+
+def preprocess_image(image_path):
+    # Util function to open, resize and format pictures
+    # into appropriate tensors.
+    img = load_img(image_path)
+    img = img_to_array(img)
+    img = np.expand_dims(img, axis=0)
+    img = inception_v3.preprocess_input(img)
+    return img
+
+
+def deprocess_image(x):
+    # Util function to convert a tensor into a valid image.
+    if K.image_data_format() == 'channels_first':
+        x = x.reshape((3, x.shape[2], x.shape[3]))
+        x = x.transpose((1, 2, 0))
+    else:
+        x = x.reshape((x.shape[1], x.shape[2], 3))
+    x /= 2.
+    x += 0.5
+    x *= 255.
+    x = np.clip(x, 0, 255).astype('uint8')
+    return x
+
+K.set_learning_phase(0)
+
+# Build the InceptionV3 network with our placeholder.
+# The model will be loaded with pre-trained ImageNet weights.
+model = inception_v3.InceptionV3(weights='imagenet',
+                                 include_top=False)
+dream = model.input
+print('Model loaded.')
+
+# Get the symbolic outputs of each "key" layer (we gave them unique names).
+layer_dict = dict([(layer.name, layer) for layer in model.layers])
+
+# Define the loss.
+loss = K.variable(0.)
+for layer_name in settings['features']:
+    # Add the L2 norm of the features of a layer to the loss.
+    if layer_name not in layer_dict:
+        raise ValueError('Layer ' + layer_name + ' not found in model.')
+    coeff = settings['features'][layer_name]
+    x = layer_dict[layer_name].output
+    # We avoid border artifacts by only involving non-border pixels in the loss.
+    scaling = K.prod(K.cast(K.shape(x), 'float32'))
+    if K.image_data_format() == 'channels_first':
+        loss += coeff * K.sum(K.square(x[:, :, 2: -2, 2: -2])) / scaling
+    else:
+        loss += coeff * K.sum(K.square(x[:, 2: -2, 2: -2, :])) / scaling
+
+# Compute the gradients of the dream wrt the loss.
+grads = K.gradients(loss, dream)[0]
+# Normalize gradients.
+grads /= K.maximum(K.mean(K.abs(grads)), K.epsilon())
+
+# Set up function to retrieve the value
+# of the loss and gradients given an input image.
+outputs = [loss, grads]
+fetch_loss_and_grads = K.function([dream], outputs)
+
+
+def eval_loss_and_grads(x):
+    outs = fetch_loss_and_grads([x])
+    loss_value = outs[0]
+    grad_values = outs[1]
+    return loss_value, grad_values
+
+
+def resize_img(img, size):
+    img = np.copy(img)
+    if K.image_data_format() == 'channels_first':
+        factors = (1, 1,
+                   float(size[0]) / img.shape[2],
+                   float(size[1]) / img.shape[3])
+    else:
+        factors = (1,
+                   float(size[0]) / img.shape[1],
+                   float(size[1]) / img.shape[2],
+                   1)
+    return scipy.ndimage.zoom(img, factors, order=1)
+
+
+def gradient_ascent(x, iterations, step, max_loss=None):
+    for i in range(iterations):
+        loss_value, grad_values = eval_loss_and_grads(x)
+        if max_loss is not None and loss_value > max_loss:
+            break
+        print('..Loss value at', i, ':', loss_value)
+        x += step * grad_values
+    return x
+
+
+"""Process:
+- Load the original image.
+- Define a number of processing scales (i.e. image shapes),
+    from smallest to largest.
+- Resize the original image to the smallest scale.
+- For every scale, starting with the smallest (i.e. current one):
+    - Run gradient ascent
+    - Upscale image to the next scale
+    - Reinject the detail that was lost at upscaling time
+- Stop when we are back to the original size.
+To obtain the detail lost during upscaling, we simply
+take the original image, shrink it down, upscale it,
+and compare the result to the (resized) original image.
+"""
+
+
+# Playing with these hyperparameters will also allow you to achieve new effects
+step = 0.01  # Gradient ascent step size
+num_octave = 3  # Number of scales at which to run gradient ascent
+octave_scale = 1.4  # Size ratio between scales
+iterations = 20  # Number of ascent steps per scale
+max_loss = 10.
+
+img = preprocess_image(base_image_path)
+if K.image_data_format() == 'channels_first':
+    original_shape = img.shape[2:]
+else:
+    original_shape = img.shape[1:3]
+successive_shapes = [original_shape]
+for i in range(1, num_octave):
+    shape = tuple([int(dim / (octave_scale ** i)) for dim in original_shape])
+    successive_shapes.append(shape)
+successive_shapes = successive_shapes[::-1]
+original_img = np.copy(img)
+shrunk_original_img = resize_img(img, successive_shapes[0])
+
+for shape in successive_shapes:
+    print('Processing image shape', shape)
+    img = resize_img(img, shape)
+    img = gradient_ascent(img,
+                          iterations=iterations,
+                          step=step,
+                          max_loss=max_loss)
+    upscaled_shrunk_original_img = resize_img(shrunk_original_img, shape)
+    same_size_original = resize_img(original_img, shape)
+    lost_detail = same_size_original - upscaled_shrunk_original_img
+
+    img += lost_detail
+    shrunk_original_img = resize_img(original_img, shape)
+
+save_img(result_prefix + '.png', deprocess_image(np.copy(img)))
+]]>
+        </programlisting>  
     </section>        
 <!--
     <section>
@@ -71,19 +362,103 @@
         </para>
     </section>        
 -->                  
-    <section>
+<section>
         <title>Minecraft-MALMÖ</title>
         <para>
+            Most, hogy már van némi ágensprogramozási gyakorlatod, adj egy rövid általános áttekintést a MALMÖ projektről!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/bAPSu3Rndi8">https://youtu.be/bAPSu3Rndi8</link>      
+            Megoldás videó: initial hack: <link xlink:href="https://youtu.be/bAPSu3Rndi8">https://youtu.be/bAPSu3Rndi8</link>.
+            Red Flower Hell: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>.      
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: a Red Flower Hell repójában.               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A Malmö projekt lehetővé teszi a Minecraft forráskódjának megtekintését és szerkesztését. A Minecraft segítségével kísérletezhetünk az AI-n. Ez lehetővé teszi a karakterek számára az általunk kiadott parancsok végrehajtását.
         </para>
-    </section>        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-</chapter>                
+        <para>
+        	Letölteni a <link xlink:href="https://github.com/Microsoft/malmo/releases">https://github.com/Microsoft/malmo/releases</link> oldalról tudjuk. Szerencsénk van, mivel különböző platformokkal is kompatibilis a Minecraft. Legyen az Linux, Windows, MacOs, bármelyik platformon futtatni tudjuk játékot. Ubuntun pl. a Minecraft mappába belépve, onnan egy terminált megnyitva, a <command> ./launchClient.sh </command> paranccsal már indíthatjuk a Minecraft-ot.
+        </para>
+        <para>
+        	Ezután ha indulásra kész a játék, neki kezdhetünk a saját kis karakterünk beprogramozásának. Lehetőségünk van akár C++, akár Python szövegkörnyezetben írni a forráskódunkat.
+        	Mozgási parancsokat adhatunk ki karakterünknel, legyen az előremozgás, ugrás, fordulás, ütés, amit csak szeretnénk (persze a megengedett kereteken belül).
+        </para>
+        <para>
+        	Nálam, személy szerint az egész Malmö Project a Debreceni Egyetem második félévében kezdődött el. Bátfai tanár úr sokszor ösztönzött minket, hogy a Malmö-vel igencsak fejleszthetjük programozási tudásunkat, habár néha úgy gondoltuk, hogy a Delete gomb megnyomásával az egészet a kukába tesszük. Visszagondolva tényleg tanulhattunk a Minecraft-tól, hiszen néha matematikai számításokat, logikai gondolkozást igényelt az adott feladatok beprogramozási.
+        	Eddig három verseny került megrendezésre. Az első versenyünkön bármilyen haxorkodás elfogadható volt. Teleportálhattunk a virágokét akár, ezzel összegyűjtve az összes virágot. A második versenytől lett csak igazán érdekes a verseny. Bevezettünk több szabályt, amely nehezebbé tette a dolgunkat a programozás terén. Majd a negyedik versenyen jött az igazi őrület. Finomítgattuk a programunkat, ahogy tudtuk, a bugokat megpróbáltuk kijavítni, és a verseny indulása előtt kaptunk egy teljesen új pályát, amellyel ágensünk megmérkőzhetett. Sajnos igen, a miénk csunány elbukott, de nem tántorodtunk meg, így napról napra tovább fejlesztettük azt. Na jó legyen vége a Story Time-nak és beszéljünk a lényegesebb dolgokról.
+        </para>
+        <programlisting language="python"><![CDATA[# Loop until mission ends:
+while world_state.is_mission_running:
+    print("--- nb4tf4i arena -----------------------------------\n")
+    self.agent_host.sendCommand( "move 1" )
+    time.sleep(.5)            
+    self.agent_host.sendCommand( "turn 1" )
+    time.sleep(.5)
+    world_state = self.agent_host.getWorldState()
+]]>
+        </programlisting>  
+        <para>
+        	Itt láthatjuk a program egyik lényegi részét. Így adunk ki mozgási parancsokat.
+        </para>
+ <programlisting language="python"><![CDATA[class Steve:
+    def __init__(self, agent_host):
+        self.agent_host = agent_host
+        self.x = 0
+        self.y = 0
+        self.z = 0        
+        self.yaw = 0
+        self.pitch = 0        
+
+    def run(self):
+        world_state = self.agent_host.getWorldState()
+        # Loop until mission ends:
+        while world_state.is_mission_running:
+            print("--- nb4tf4i arena -----------------------------------\n")
+            if world_state.number_of_observations_since_last_state != 0:
+
+                sensations = world_state.observations[-1].text
+                print("    sensations: ", sensations)                
+                observations = json.loads(sensations)
+                nbr3x3x3 = observations.get("nbr3x3", 0)
+                print("    3x3x3 neighborhood of Steve: ", nbr3x3x3)
+
+                if "Yaw" in observations:
+                    self.yaw = int(observations["Yaw"])
+                if "Pitch" in observations:
+                    self.pitch = int(observations["Pitch"])
+                if "XPos" in observations:
+                    self.x = int(observations["XPos"])
+                if "ZPos" in observations:
+                    self.z = int(observations["ZPos"])        
+                if "YPos" in observations:
+                    self.y = int(observations["YPos"])  
+
+                print("    Steve's Coords: ", self.x, self.y, self.z)        
+                print("    Steve's Yaw: ", self.yaw)        
+                print("    Steve's Pitch: ", self.pitch)
+
+
+            if "LineOfSight" in observations:
+    		lineOfSight = observations["LineOfSight"]
+    		self.lookingat = lineOfSight["type"]
+			print("    Steve's <): ", self.lookingat)
+]]>
+	</programlisting>
+		<para>
+			Itt amit láthatunk, nem más, mint az, hogy mit lát Steve. Magyarán megmondva, lekérdezzük a környezetet 3x3x3-as látásmódban.
+		</para>
+		<para>
+			Mindenkit csak bíztatni tudok, hogy próbálja ki ezt a programozási formát. Akik szeretik a Minecraft-ot és persze programozni is szeretnek/szeretnének, ajánlani tudom a következő Youtube csatornát, ahol megtanulhatjátok az alapokat, hogy hogyan kezdejetek neki a Malmö-Projectnek:  <link xlink:href="https://www.youtube.com/channel/UCKrJV21SFN_5YN6d1F_5UIw">https://www.youtube.com/channel/UCKrJV21SFN_5YN6d1F_5UIw</link> 
+		</para>
+    </section>      
+    <section>
+        <title>Vörös Pipacs Pokol/javíts a 19 RF-en</title>
+        <para>
+            Megoldás forrása: <link xlink:href="https://youtu.be/UbiBkkLx1Fk">https://youtu.be/UbiBkkLx1Fk</link>               
+        </para>
+        <para>
+        	Mivel az előző fejezetben is arról beszéltünk, amivel a 19 RF-en javítottunk, ezért hivatkoznék az előző fejezet 5. feladatára, ahol meglehet nézni, hogyan javítottunk a kódon.
+        </para>            
+    </section>                                                                                                                                                                                                                                                                                                                    
+</chapter>        
