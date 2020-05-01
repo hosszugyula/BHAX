@@ -16,6 +16,51 @@
         <para>
             Megoldás forrása:                
         </para>
+        <blockquote><attribution>Wikipedia</attribution>
+        <para>
+		A Lisp programozási nyelv (helyesebben nyelvcsalád) hosszú történetre tekint vissza. Eredetileg általános célú programnyelvnek tervezték az 50-es évek legvégén, de hamarosan a mesterséges intelligencia kutatás előszeretettel alkalmazott nyelvévé vált, amikor az 50-es, 60-as években ezen terület az első virágkorát élte. Ma a Lisp nyelveket számos területen alkalmazzák, és közkedvelt a számításelmélet oktatásában is.	
+        </para>
+        </blockquote>
+ 		<para>
+            A LISP használatához először is le kell telepítenünk a Lisp futtató programot, a 
+            <filename>clisp</filename>-t.
+            Amit így futtatunk: <computeroutput>clisp fájlnév.lisp</computeroutput> 
+        </para>
+        <para>
+            iteralt -> az algoritmus annyiszor hajtódik végre, amennyi a megadott szám (4)
+        </para>
+        <programlisting><![CDATA[
+            (defun factorial (N)
+       (let ((R 1))
+            (do ((i 1 (+ i 1) )) ((> i N) R)
+                (setf r (* r i))
+            )
+       )
+)
+
+(print (factorial 4))
+)]]></programlisting>
+		<para>
+        rekurziv -> addig hívja meg önmagát, míg a beadott számból ki nem jön az 1 (4 -> 1)
+        </para>
+        <programlisting><![CDATA[
+  (defun factorial (N)
+       (if (= N 1)
+           1
+           (* N (factorial (- N 1)))
+       )
+)
+
+(print (factorial 4))
+)]]>
+        </programlisting>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/prtsc1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+
     </section>        
 <!--        
     <section>
@@ -44,8 +89,42 @@
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/GIMP_Lisp/Chrome">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/GIMP_Lisp/Chrome</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A GIMP Chrome filterével krómszerű hatást adhatunk az általunk megadott szövegnek. A textünk a krómszegély bal felső sarkában fog elheyezkedni.
+            Mindezt az első feladatból megismert Scheme programozási nyelvben, a GIMP eljárásáin keresztül megírni. A script fájl elhelyezése után (GIMP 2\share\gimp\2.0\scripts), a GIMP futtatásakor láthatjuk, hogy a Létrehozás fülnél megjelent a Chrome3-Border2.
         </para>    
+		<programlisting><![CDATA[
+  (script-fu-register "script-fu-bhax-chrome-border"
+    "Chrome3-Border2"
+    "Creates a chrome effect on a given text."
+    "Norbert Bátfai"
+    "Copyright 2019, Norbert Bátfai"
+    "January 19, 2019"
+    ""
+    SF-STRING       "Text"      "HosszúGyulaVideos"
+    SF-FONT         "Font"      "Sans"
+    SF-ADJUSTMENT   "Font size" '(160 1 1000 1 10 0 1)
+    SF-VALUE        "Width"     "1920"
+    SF-VALUE        "Height"    "1080"
+    SF-VALUE        "New width" "400"
+    SF-COLOR        "Color"     '(255 0 0)
+    SF-GRADIENT     "Gradient"  "Crown molding"    
+    SF-VALUE        "Border size"   "7"    
+)
+(script-fu-menu-register "script-fu-bhax-chrome-border" 
+    "<Image>/File/Create/BHAX"
+)
+
+	]]></programlisting>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/chrome2.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/chrome1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
     </section>        
 
     <section>
@@ -61,9 +140,62 @@
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/GIMP_Lisp/Mandala">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/GIMP_Lisp/Mandala</link>               
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>            
-    </section>        
+        	A dolgunk hasonló mint az előbb. A script fájl elhelyezése után (GIMP 2\share\gimp\2.0\scripts), a GIMP futtatásakor láthatjuk, hogy a Létrehozás fülnél megjelent a Mandala9.
+        </para>
+		<programlisting><![CDATA[
+ (script-fu-register "script-fu-bhax-mandala"
+    "Mandala9"
+    "Creates a mandala from a text box."
+    "Norbert Bátfai"
+    "Copyright 2019, Norbert Bátfai"
+    "January 9, 2019"
+    ""
+    SF-STRING       "Text"      "BHAXOR"
+    SF-STRING       "Text2"     "HAXOR"
+    SF-FONT         "Font"      "Sans"
+    SF-ADJUSTMENT   "Font size" '(100 1 1000 1 10 0 1)
+    SF-VALUE        "Width"     "1000"
+    SF-VALUE        "Height"    "1000"
+    SF-COLOR        "Color"     '(255 0 0)
+    SF-GRADIENT     "Gradient"  "Deep Sea"
+)
+(script-fu-menu-register "script-fu-bhax-mandala" 
+    "<Image>/File/Create/BHAX"
+)
+]]></programlisting>           
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/mandala.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section> 
+
+	<section>
+        <title>Vörös Pipacs Pokol/javíts tovább a javított 19 RF-eden</title>
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>               
+        </para>
+        <para>
+            Szokásos módon hivatkoznék az előző két fezejet Malmö-s feladatára. Hiszen folyamatosan javítottuk a kódunkat és nem minden forrásfájl van meg hozzá. 
+            De pár screenshot-tal bemutatom a fejlődést.
+        </para>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/fejl1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/fejl2.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+		<mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chaitin/fejl3.png" format="PNG" />
+            </imageobject>
+        </mediaobject>       
+    </section>           
+
 
 <!--    
     <section>
