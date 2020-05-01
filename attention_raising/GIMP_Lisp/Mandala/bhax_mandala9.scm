@@ -166,8 +166,8 @@
     "Copyright 2019, Norbert Bátfai"
     "January 9, 2019"
     ""
-    SF-STRING       "Text"      "Bátf41 Haxor"
-    SF-STRING       "Text2"     "BHAX"
+    SF-STRING       "Text"      "BHAXOR"
+    SF-STRING       "Text2"     "HAXOR"
     SF-FONT         "Font"      "Sans"
     SF-ADJUSTMENT   "Font size" '(100 1 1000 1 10 0 1)
     SF-VALUE        "Width"     "1000"
