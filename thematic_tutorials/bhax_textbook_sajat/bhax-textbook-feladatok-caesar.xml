@@ -18,7 +18,7 @@
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Caesar/tm.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Caesar/tm.c</filename>
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Caesar/tm.c</filename>
             </link> 
         </para>
         <para>
@@ -149,7 +149,8 @@ main (int argc, char **argv)
 }
 ]]></programlisting> 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A program fordítása: <command>  gcc exor.c -o exor -std=c99 </command>.
+            Futtatása pedig: <command> ./exor pla (crtl+í) szoveg.txt >titkos.szoveg </command>
         </para>            
     </section>        
     <section>

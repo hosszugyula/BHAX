@@ -21,7 +21,7 @@ main ( void )
 
         getmaxyx ( ablak, my , mx );
 
-        mvprintw ( y, x, "KORONA" );
+        mvprintw ( y, x, "o_o" );
 
         refresh ();
         usleep ( 100000 );

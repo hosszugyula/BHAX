@@ -218,8 +218,7 @@ false]]></screen>
             függvényt, azaz a T100 program nem is létezik.                
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+ Ez a feladat a megállási probléma bemutatására szolgál. A megállási probléma abból áll, hogy el lehet-e dönteni egy porgramról adott bemenet esetén, hogy végtelen ciklusba kerül-e. Alan Turing 1936-ban bizonyította be, hogy nem lehetséges olyan általános algoritmust írni, amely minden program-bemenet párról megmondja, hogy végtelen ciklusba kerül-e.        </para>
     </section>        
                 
     <section>
@@ -378,7 +377,8 @@ int main ( void )
 }
 }]]></programlisting> 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A programok fordítását a <command> gcc labdapatt_if.c -o labdapatt_if -lncurses </command>, illeteve a <command> gcc labdapatt.c -o labdapatt -lncurses </command> paranccsal végezzük.
+            A program futtatását pedig a szokásos módon: <command> ./labdapatt ./labdapatt_if </command>.
         </para>
     </section>                     
 
@@ -493,7 +493,8 @@ return 0;
 
 }]]></programlisting>        
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A program fordítása a <command> gcc hello_google.c -o hello_google -lm </command> paranccsal lehetséges.
+            Futtatása pedig a <command> ./hello_google </command> paranccsal.
         </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                         

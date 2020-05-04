@@ -153,7 +153,7 @@ c89_99.c:5:2: note: use option -std=c99, -std=gnu99, -std=c11 or -std=gnu11 to c
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/realnumber.l">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/realnumber.l</filename>
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/realnumber.l</filename>
             </link> 
         </para>
         <programlisting language="c"><![CDATA[%{
@@ -174,7 +174,8 @@ main ()
 }
 ]]></programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+        	A program fordítása a <command> lex -o realnumber.c realnumber.l </command> paranccsal, majd a <command> gcc realnumber.c -o realnumber -lfl </command> paranccsal történik.
+        	A program futtatása pedig a <command> ./realnumber </command> paranccsal.
         </para>
     </section>                     
 
@@ -188,10 +189,35 @@ main ()
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/l337d1c7.l">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/l337d1c7.l</filename>
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/l337d1c7.l</filename>
             </link>  
         </para>
         <programlisting language="c"><![CDATA[%{
+/*
+Forditas:
+$ lex -o l337d1c7.c l337d1c7.l 
+
+Futtatas:
+$ gcc l337d1c7.c -o l337d1c7 -lfl
+(kilépés az input vége, azaz Ctrl+D)
+
+Copyright (C) 2019
+Norbert Bátfai, batfai.norbert@inf.unideb.hu
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+%{
   #include <stdio.h>
   #include <stdlib.h>
   #include <time.h>
@@ -265,41 +291,7 @@ main ()
 	      else if(r<98)
 	        printf("%s", l337d1c7[i].leet[2]);
 	      else 
-	            <section>
-        <title>Decimálisból unárisba átváltó Turing gép</title>
-        <para>
-            Állapotátmenet gráfjával megadva írd meg ezt a gépet!
-        </para>
-        <para>
-            Megoldás videó:
-        </para>
-        <para>
-            Megoldás forrása: <link xlink:href="Chomsky/dectoun.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/dectoun.c</filename>
-            </link>,                
-        </para>
-        <programlisting language="c"><![CDATA[Decimálisból unárisba
-#include <stdio.h>
-
-int main(void)
-{
-    printf
-        ("Kérek egy számot decimálisan: ");
-
-    int decnum = 0;
-    scanf("%d", &decnum);
-    
-    printf("A szám unárisan:");
-    
-    for (int i = 0; i < decnum; ++i)
-        (i % 5) ? printf("|") : printf(" |");
-
-    printf("\n");
-    return 0;
-}
-
-}]]></programlisting>
-    <programlisting><![CDATA[printf("%s", l337d1c7[i].leet[3]);
+	        printf("%s", l337d1c7[i].leet[3]);
 
 	      found = 1;
 	      break;
@@ -318,7 +310,6 @@ main()
   srand(time(NULL)+getpid());
   yylex();
   return 0;
-}
 }]]></programlisting>
         <para>
             Tanulságok, tapasztalatok, magyarázat...
@@ -387,11 +378,6 @@ main()
             <para> Kérdéses, hogy az eredeti a-t vagy a módosított a-t fogja kiprintelni, mivel a kiértékelési sorrenddel gondok vannak. </para>
             </listitem>
         </orderedlist>
-
-        <para>
-            Megoldás videó: 
-        </para>
-
     </section>                     
 
     <section>
@@ -571,10 +557,10 @@ return 0;
             Az utolsó két deklarációs példa demonstrálására két olyan kódot
             írtunk, amelyek összahasonlítása azt mutatja meg, hogy miért 
             érdemes a <command>typedef</command> használata: <link xlink:href="Chomsky/fptr.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/fptr.c</filename>
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/fptr.c</filename>
             </link>,
             <link xlink:href="Chomsky/fptr2.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/fptr2.c</filename>.
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/fptr2.c</filename>.
             </link>  
             
         </para>
