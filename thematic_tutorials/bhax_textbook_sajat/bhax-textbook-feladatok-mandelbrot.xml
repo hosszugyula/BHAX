@@ -1,10 +1,14 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
-    <info>
-        <title>Helló, Mandelbrot!</title>
-        <keywordset>
-            <keyword/>
-        </keywordset>
-    </info>
+   <info>
+      <title>Helló, Mandelbrot!</title>
+    <abstract>
+        <para>
+       </para>
+    </abstract>
+   </info>   
+  <para>
+    Összefoglaló videó: <link xlink:href="https://youtu.be/p2l0p64kD58">https://youtu.be/p2l0p64kD58</link>
+  </para> 
     <section xml:id="bhax-textbook-feladatok-mandelbrot.Mandelbrot">
         <title>A Mandelbrot halmaz</title>
         <para>

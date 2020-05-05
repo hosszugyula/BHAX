@@ -1,10 +1,14 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
-    <info>
-        <title>Helló, Turing!</title>
-        <keywordset>
-            <keyword/>
-        </keywordset>
-    </info>
+   <info>
+      <title>Helló, Turing!</title>
+    <abstract>
+        <para>
+       </para>
+    </abstract>
+   </info>   
+  <para>
+    Összefoglaló videó: <link xlink:href="https://youtu.be/dix9zxoYh58">https://youtu.be/dix9zxoYh58</link>
+  </para>    
     <section>
         <title>Végtelen ciklus</title>
         <para>

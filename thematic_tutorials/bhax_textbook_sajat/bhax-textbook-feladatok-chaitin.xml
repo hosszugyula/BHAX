@@ -1,17 +1,21 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
-    <info>
-        <title>Helló, Chaitin!</title>
-        <keywordset>
-            <keyword/>
-        </keywordset>
-    </info>
+   <info>
+      <title>Helló, Chaitin!</title>
+    <abstract>
+        <para>
+       </para>
+    </abstract>
+   </info>   
+  <para>
+    Összefoglaló videó: <link xlink:href="https://youtu.be/-1gtws7pZyc">https://youtu.be/-1gtws7pZyc</link>
+  </para> 
     <section>
         <title>Iteratív és rekurzív faktoriális Lisp-ben</title>
         <para>
                 
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/z6NJE2a1zIA">https://youtu.be/z6NJE2a1zIA</link>      
+            Megoldás videó: <link xlink:href="https://youtu.be/-1gtws7pZyc">https://youtu.be/-1gtws7pZyc</link>      
         </para>
         <para>
             Megoldás forrása:                
