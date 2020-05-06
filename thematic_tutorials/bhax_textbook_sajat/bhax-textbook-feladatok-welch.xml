@@ -342,6 +342,9 @@ void BinRandTree<ValueType>::deltree(Node *node){
     <section>
         <title>Vörös Pipacs Pokol/5x5x5 ObservationFromGrid</title>
         <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/x9Kjn1GdycQ">https://youtu.be/x9Kjn1GdycQ</link>
+        </para>
+        <para>
             Megoldás forrása: <link xlink:href="Welch/red_flower.py">
                 <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Welch/red_flower.py </filename> 
             </link>

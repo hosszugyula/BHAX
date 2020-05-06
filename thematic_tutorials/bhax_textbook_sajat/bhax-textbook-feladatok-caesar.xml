@@ -507,10 +507,27 @@ $net.result
 ]]></screen>   
         <para>
             Ezután megkapjuk a szimuláció eredményeit a következő ábrákon!
-            Ezek a következő helyen megtalálhatóak <link xlink:href="Caesar/Rplots,Rplots1,Rplots2,Rplots3">
-                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Ceasar/</filename>
-            </link> 
         </para>            
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Caesar/Rplots.pdf" format="PDF" />
+            </imageobject>
+        </mediaobject>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Caesar/Rplots1.pdf" format="PDF" />
+            </imageobject>
+        </mediaobject>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Caesar/Rplots2.pdf" format="PDF" />
+            </imageobject>
+        </mediaobject>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Caesar/Rplots3.pdf" format="PDF" />
+            </imageobject>
+        </mediaobject>
     </section>        
     <section>
         <title>Hiba-visszaterjesztéses perceptron</title>
@@ -564,7 +581,7 @@ int main (int argc, char **argv)
     <section>
         <title>Vörös Pipacs Pokol/írd ki, mit lát Steve</title>
         <para>
-            Megoldás videó:     
+            Megoldás videó:  <link xlink:href="https://youtu.be/x9Kjn1GdycQ">https://youtu.be/x9Kjn1GdycQ</link>     
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Ceasar/whatcanisee.py">
