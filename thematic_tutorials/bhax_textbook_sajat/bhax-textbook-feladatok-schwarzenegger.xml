@@ -390,11 +390,11 @@ save_img(result_prefix + '.png', deprocess_image(np.copy(img)))
         </para>
         <para>
         	Ezután ha indulásra kész a játék, neki kezdhetünk a saját kis karakterünk beprogramozásának. Lehetőségünk van akár C++, akár Python szövegkörnyezetben írni a forráskódunkat.
-        	Mozgási parancsokat adhatunk ki karakterünknel, legyen az előremozgás, ugrás, fordulás, ütés, amit csak szeretnénk (persze a megengedett kereteken belül).
+        	Mozgási parancsokat adhatunk ki karakterünknek, legyen az előremozgás, ugrás, fordulás, ütés, amit csak szeretnénk (persze a megengedett kereteken belül).
         </para>
         <para>
         	Nálam, személy szerint az egész Malmö Project a Debreceni Egyetem második félévében kezdődött el. Bátfai Tanár Úr sokszor ösztönzött minket, hogy a Malmö-vel igencsak fejleszthetjük programozási tudásunkat, habár néha úgy gondoltuk, hogy a Delete gomb megnyomásával az egészet a kukába tesszük. Visszagondolva tényleg tanulhattunk a Minecraft-tól, hiszen néha matematikai számításokat, logikai gondolkozást igényelt az adott feladatok beprogramozása.
-        	Eddig három verseny került megrendezésre. Az első versenyünkön bármilyen haxorkodás elfogadható volt. Teleportálhattunk a virágokét akár, ezzel összegyűjtve az összes virágot. A második versenytől lett csak igazán érdekes a verseny. Bevezettünk több szabályt, amely nehezebbé tette a dolgunkat a programozás terén. Majd a harmadik versenyen jött az igazi őrület. Finomítgattuk a programunkat, ahogy tudtuk, a bugokat megpróbáltuk kijavítni, és a verseny indulása előtt kaptunk egy teljesen új pályát, amellyel ágensünk megmérkőzhetett. Sajnos igen, a miénk csunány elbukott, de nem tántorodtunk meg, így napról napra tovább fejlesztettük azt. Na jó legyen vége a Story Time-nak és beszéljünk a lényegesebb dolgokról.
+        	Eddig három verseny került megrendezésre. Az első versenyünkön bármilyen haxorkodás elfogadható volt. Teleportálhattunk a virágokért akár, ezzel összegyűjtve az összes virágot. A második versenytől lett csak igazán érdekes a verseny. Bevezettünk több szabályt, amely nehezebbé tette a dolgunkat a programozás terén. Majd a harmadik versenyen jött az igazi őrület. Finomítgattuk a programunkat, ahogy tudtuk, a bugokat megpróbáltuk kijavítni, és a verseny indulása előtt kaptunk egy teljesen új pályát, amellyel ágensünk megmérkőzhetett. Sajnos igen, a miénk csunyán elbukott, de nem tántorodtunk meg, így napról napra tovább fejlesztettük azt. Na jó legyen vége a Story Time-nak és beszéljünk a lényegesebb dolgokról.
         </para>
         <programlisting language="python"><![CDATA[# Loop until mission ends:
 while world_state.is_mission_running:
