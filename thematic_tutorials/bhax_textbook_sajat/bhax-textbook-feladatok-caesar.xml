@@ -336,9 +336,19 @@ sys 0m0,001s
             </link>               
         </para>
         <para>
+        	Neurális hálónak nevezzük azt a párhuzamos működésre képes információfeldolgozó eszközt, amely nagyszámú, hasonló típusú elem összekapcsolt rendszeréből áll.
+        	Továbbá jellemzője az is, hogy rendelkezik tanulási algoritmussal és képes előhívni a megtanult információt.
+        </para>
+        <para>
             Itt az R programban egy neutrális hálót építünk fel, amely úgy 
             működik, hogy meg adjuk milyen bemenetre, milyen kimenetet várunk, amit 
             a program meg próbál mesterségesen utánozni
+        </para>
+        <para>
+        	a1 és a2 értékeket tartalmaz, az OR pedig a logikai VAGY műveletet jelöli. A program az általunk meghatározott szabályok alapján elkezd tanulni.
+        	A <function>compute</function> parancs segítségével tudjuk leellenőrizni, hogy a megfelelő eredményeket kaptuk-e vagy sem.
+        	A logikai ÉS művelet (AND) betanítása is hasonló módon történik.
+        	Az EXOR műveletnél azonban csak többrétegű neuronokkal lehetséges a tanítás (hidden = 2).
         </para>
 <programlisting language="c"><![CDATA[library(neuralnet)
 
@@ -356,12 +366,11 @@ compute(nn.or, or.data[,1:2])
 
 a1    <- c(0,1,0,1)
 a2    <- c(0,0,1,1)
-OR    <- c(0,1,1,1)
 AND   <- c(0,0,0,1)
 
-orand.data <- data.frame(a1, a2, OR, AND)
+orand.data <- data.frame(a1, a2, AND)
 
-nn.orand <- neuralnet(OR+AND~a1+a2, orand.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
+nn.orand <- neuralnet(AND~a1+a2, orand.data, hidden=0, linear.output=FALSE, stepmax = 1e+07, threshold = 0.000001)
 
 plot(nn.orand)
 
@@ -392,7 +401,7 @@ plot(nn.exor)
 compute(nn.exor, exor.data[,1:2])
 
 ]]></programlisting> 
-<screen><![CDATA[hosszu@hosszu-X550JK:~/exor$ Rscript neu.r 
+<screen><![CDATA[hosszu@hosszu-X550JK:~/git_workspace/thematic_tutorials/bhax_textbook_sajat/Caesar$ Rscript neu.r
 $neurons
 $neurons[[1]]
        a1 a2
@@ -404,10 +413,10 @@ $neurons[[1]]
 
 $net.result
             [,1]
-[1,] 0.001447521
-[2,] 0.999207152
-[3,] 0.999211911
-[4,] 0.999999999
+[1,] 0.001170313
+[2,] 0.999109325
+[3,] 0.999793549
+[4,] 1.000000000
 
 dev.new(): using pdf(file="Rplots1.pdf")
 $neurons
@@ -420,11 +429,11 @@ $neurons[[1]]
 
 
 $net.result
-             [,1]         [,2]
-[1,] 4.688566e-05 2.935628e-09
-[2,] 9.999668e-01 1.372479e-03
-[3,] 9.999830e-01 1.306219e-03
-[4,] 1.000000e+00 9.983696e-01
+             [,1]
+[1,] 2.233663e-09
+[2,] 1.159100e-03
+[3,] 1.278807e-03
+[4,] 9.984990e-01
 
 dev.new(): using pdf(file="Rplots2.pdf")
 $neurons
@@ -438,10 +447,10 @@ $neurons[[1]]
 
 $net.result
           [,1]
-[1,] 0.4999974
-[2,] 0.5000000
-[3,] 0.4999984
-[4,] 0.5000009
+[1,] 0.5000036
+[2,] 0.5000005
+[3,] 0.5000009
+[4,] 0.4999978
 
 dev.new(): using pdf(file="Rplots3.pdf")
 $neurons
@@ -453,53 +462,105 @@ $neurons[[1]]
 [4,] 1  1  1
 
 $neurons[[2]]
-     [,1]       [,2]      [,3]       [,4]      [,5]       [,6]      [,7]
-[1,]    1 0.48641818 0.6080826 0.90763562 0.4322657 0.85943362 0.7405129
-[2,]    1 0.02231602 0.9870802 0.99945591 0.6407167 0.06454867 0.9963504
-[3,]    1 0.98842950 0.0650355 0.07275219 0.8688132 0.99983865 0.0627399
-[4,]    1 0.67307305 0.7740213 0.93617033 0.9394369 0.98590253 0.8649334
+     [,1]      [,2]      [,3]         [,4]       [,5]         [,6]       [,7]
+[1,]    1 0.0288060 0.9799458 9.199682e-01 0.03558897 0.2907507186 0.02943174
+[2,]    1 0.1476251 0.9017288 5.365905e-04 0.19099735 0.0003929578 0.99833333
+[3,]    1 0.3820403 0.3803944 1.892449e-03 0.34949222 0.6783318100 0.99628773
+[4,]    1 0.7830781 0.1033680 8.855493e-08 0.77463442 0.0020181408 0.99999981
 
 $neurons[[3]]
-     [,1]         [,2]         [,3]         [,4]       [,5]
-[1,]    1 0.0122608635 0.0072254553 2.248167e-03 0.99273400
-[2,]    1 0.9106634387 0.0002723049 1.753846e-06 0.03689141
-[3,]    1 0.0002960452 0.9746515685 9.926152e-01 0.99999039
-[4,]    1 0.0087937749 0.0089005799 1.221435e-03 0.99729153
+     [,1]       [,2]       [,3]       [,4]         [,5]
+[1,]    1 0.99611336 0.94805882 0.67380615 0.9981901250
+[2,]    1 0.91528002 0.88208130 0.07473041 0.0020478591
+[3,]    1 0.92366621 0.94113089 0.04950058 0.0003263360
+[4,]    1 0.08004032 0.08133186 0.96256032 0.0001569666
 
 $neurons[[4]]
-     [,1]       [,2]      [,3]       [,4]       [,5]       [,6]       [,7]
-[1,]    1 0.94754302 0.1054268 0.05411420 0.93313867 0.06513658 0.95204575
-[2,]    1 0.08917933 0.9393418 0.86223967 0.52277427 0.99126442 0.04913119
-[3,]    1 0.01923043 0.9820232 0.98832512 0.01755935 0.18381721 0.01835838
-[4,]    1 0.94843521 0.1039369 0.05313773 0.93374322 0.06338484 0.95296792
+     [,1]         [,2]       [,3]         [,4]       [,5]         [,6]
+[1,]    1 0.0009007891 0.99988861 0.0003044054 0.99831862 0.0001456069
+[2,]    1 0.9514703536 0.09133801 0.8723371493 0.03207731 0.9715388434
+[3,]    1 0.9669014323 0.06847480 0.8994491145 0.02248892 0.9808962827
+[4,]    1 0.0079172003 0.99159691 0.0110317281 0.99619924 0.0012570094
+             [,7]
+[1,] 0.0007940185
+[2,] 0.9888529539
+[3,] 0.9925795567
+[4,] 0.0011267832
 
 
 $net.result
              [,1]
-[1,] 0.0005830801
-[2,] 0.9997665196
-[3,] 0.9993741825
-[4,] 0.0005703819
+[1,] 0.0005579501
+[2,] 0.9998548309
+[3,] 0.9998841482
+[4,] 0.0005971389
+
         
 ]]></screen>   
         <para>
             Ezután megkapjuk a szimuláció eredményeit a következő ábrákon!
-        </para>            
+        </para>   
+        <para> 
+            Látható, hogy megtanulta az "OR" kapcsolatot.
+        </para>         
+        <programlisting language = "c" ><![CDATA[
+        	$net.result
+            [,1]
+			[1,] 0.001447521
+			[2,] 0.999207152
+			[3,] 0.999211911
+			[4,] 0.999999999
+        ]]></programlisting>
         <mediaobject>
             <imageobject>
                 <imagedata fileref="./Caesar/Rplots.pdf" format="PDF" />
             </imageobject>
         </mediaobject>
+        <para>
+        	Látható, hogy megtanulta az "AND" kapcsolatot. 
+        </para>
+        <programlisting language = "c" ><![CDATA[
+			$net.result
+			             [,1]
+			[1,] 2.233663e-09
+			[2,] 1.159100e-03
+			[3,] 1.278807e-03
+			[4,] 9.984990e-01
+
+        ]]></programlisting>
         <mediaobject>
             <imageobject>
                 <imagedata fileref="./Caesar/Rplots1.pdf" format="PDF" />
             </imageobject>
         </mediaobject>
+        <para>
+        	Láthatjuk, hogy a rejtett neuronok nélkül, nem ad megfelelő eredményt a program.
+        </para>
+        <programlisting language = "c" ><![CDATA[
+			$net.result
+			          [,1]
+			[1,] 0.5000036
+			[2,] 0.5000005
+			[3,] 0.5000009
+			[4,] 0.4999978
+
+        ]]></programlisting>
         <mediaobject>
             <imageobject>
                 <imagedata fileref="./Caesar/Rplots2.pdf" format="PDF" />
             </imageobject>
         </mediaobject>
+        <para>
+        	Viszont ha a rejtett neuronok számát, minimum kettőre állítjuk, megfelelő eredményt fogunk kapni.
+        </para>
+        <programlisting language = "c" ><![CDATA[
+			$net.result
+			             [,1]
+			[1,] 0.0005579501
+			[2,] 0.9998548309
+			[3,] 0.9998841482
+			[4,] 0.0005971389
+        ]]></programlisting>
         <mediaobject>
             <imageobject>
                 <imagedata fileref="./Caesar/Rplots3.pdf" format="PDF" />
@@ -644,9 +705,33 @@ class Steve:
 
 ]]></programlisting> 
         <para>
-            Tanulságok, tapasztalatok, magyarázat... ezt kell az olvasónak kidolgoznia, mint labor- vagy otthoni mérési feladatot!
-            Ha mi már megtettük, akkor használd azt, dolgozd fel, javítsd, adj hozzá értéket!
-        </para>            
+            Itt látható a legfontosabb kódcsipet. Ezt fogom részletesebben magyarázni. Mint látható az előző feladatból vett megoldások is láthatóak benne a csigamozgást illetően.
+        </para>
+        <programlisting language ="python"><![CDATA[
+        def __init__(self, agent_host):
+        self.agent_host = agent_host
+        self.x = 0
+        self.y = 0
+        self.z = 0        
+        self.yaw = 0
+        self.pitch = 0
+        self.akadaly = 0
+        self.akadaly2 = 0
+        self.uthossz = 9
+      ]]></programlisting>  
+        <para>
+        	Itt deklarálnunk kell néhány változót: a pozíció koordináták a <command>self.x</command>, <command>self.y</command>, <command>self.z</command>. Az irányt a <command>self.yaw</command> változóban, a nézetet pedig a <command> self.pitch </command> változóban fogjuk tárolni.
+        </para>      
+        <programlisting language ="python"><![CDATA[
+        sensations = world_state.observations[-1].text
+        #print("    sensations: ", sensations)                
+        observations = json.loads(sensations)
+        nbr7x7x7 = observations.get("nbr7x7", 0)
+        print("    7x7x7 neighborhood of Steve: ", nbr7x7x7)
+        ]]></programlisting> 
+        <para>
+        A json függvény segítségével információt szerzünk a Steve-et körülvevő blokkokról, ezeket természetesen ki is tudjuk iratni a következőképpen: <command>print("7x7x7 neighborhood of Steve: ", nbr7x7x7) </command>.
+    	</para>
     </section>
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

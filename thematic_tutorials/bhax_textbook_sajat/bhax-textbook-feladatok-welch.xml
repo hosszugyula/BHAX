@@ -362,6 +362,32 @@ void BinRandTree<ValueType>::deltree(Node *node){
         	Ezután már mehet is a program és szedhetjük a pipacsokat 5x5x5-ös látásmódban.
         </para> 
 <programlisting language="c++"><![CDATA[
+                world_state = self.agent_host.getWorldState()
+        # Loop until mission ends:
+        while world_state.is_mission_running:
+            if world_state.number_of_observations_since_last_state != 0:
+                
+                sensations = world_state.observations[-1].text
+                #print("    sensations: ", sensations)                
+                observations = json.loads(sensations)
+                nbr5x5x5 = observations.get("nbr5x5", 0)
+                print("    5x5x5 neighborhood of Steve: ", nbr5x5x5)
+                
+                if "Yaw" in observations:
+                    self.yaw = int(observations["Yaw"])
+                if "Pitch" in observations:
+                    self.pitch = int(observations["Pitch"])
+                if "XPos" in observations:
+                    self.x = int(observations["XPos"])
+                if "ZPos" in observations:
+                    self.z = int(observations["ZPos"])        
+                if "YPos" in observations:
+                    self.y = int(observations["YPos"])  
+                
+                #print("    Steve's Coords: ", self.x, self.y, self.z)        
+                #print("    Steve's Yaw: ", self.yaw)        
+                #print("    Steve's Pitch: ", self.pitch)    
+                                            
                 if "LineOfSight" in observations:
                     lineOfSight = observations["LineOfSight"]
                     self.lookingat = lineOfSight["type"]
@@ -393,6 +419,36 @@ void BinRandTree<ValueType>::deltree(Node *node){
             self.agent_host.sendCommand("move 1")
             time.sleep(.1)
             self.akadaly = self.akadaly + 1
-]]></programlisting>         
+                
+
+            world_state = self.agent_host.getWorldState()
+
+]]></programlisting> 
+        <programlisting language ="python"><![CDATA[
+        def __init__(self, agent_host):
+        self.agent_host = agent_host
+        self.x = 0
+        self.y = 0
+        self.z = 0        
+        self.yaw = 0
+        self.pitch = 0
+        self.akadaly = 0
+        self.akadaly2 = 0
+        self.uthossz = 9
+      ]]></programlisting>  
+        <para>
+            Itt deklarálnunk kell néhány változót: a pozíció koordináták a <command>self.x</command>, <command>self.y</command>, <command>self.z</command>. Az irányt a <command>self.yaw</command> változóban, a nézetet pedig a <command> self.pitch </command> változóban fogjuk tárolni.
+        </para>      
+        <programlisting language ="python"><![CDATA[
+        sensations = world_state.observations[-1].text
+        #print("    sensations: ", sensations)                
+        observations = json.loads(sensations)
+        nbr5x5x5 = observations.get("nbr5x5", 0)
+        print("    5x5x5 neighborhood of Steve: ", nbr5x5x5)
+        ]]></programlisting> 
+        <para>
+        A json függvény segítségével információt szerzünk a Steve-et körülvevő blokkokról, ezeket természetesen ki is tudjuk iratni a következőképpen: <command>print("5x5x5 neighborhood of Steve: ", nbr5x5x5) </command>.
+        </para>
+
     </section>                                                                                                                                                                                                                                                                                                                
 </chapter>                

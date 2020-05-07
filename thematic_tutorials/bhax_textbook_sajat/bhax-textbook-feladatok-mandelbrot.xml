@@ -916,7 +916,7 @@ main (int argc, char *argv[])
         </programlisting>
 
         <para>
-        	Láthatjuk, hogy Steve <command> jumpove 1 </command> paranccsal megy szépen felfele. Amint meglátja a lávát a közelében, gyorsan hátrál kettőt, majd 180°-os fordulatot véve megindul lefele.
+        	Láthatjuk, hogy Steve <command> jumpmove 1 </command> paranccsal megy szépen felfele. Amint meglátja a lávát a közelében, gyorsan hátrál kettőt, majd 180°-os fordulatot véve megindul lefele.
         </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </chapter>                

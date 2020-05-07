@@ -664,7 +664,7 @@ main ()
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/csiga_d.py">
-                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/dectoun.c</filename>
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky/csiga_d.py</filename>
             </link>,                
         </para>
         <programlisting language="c"><![CDATA[Csiga mozgás
@@ -722,6 +722,25 @@ main ()
 
             world_state = self.agent_host.getWorldState()
 }]]></programlisting>
+	<para>
+		Láthatjuk, hogy a folytonos mozgáshoz képest az úthossz ebben az esetben nem a <command> time.sleep(uthossz)</command>-on belül definiált érték, hanem annak az értéke, hogy hányszor <command> move</command>-oljon a karakterünk. 
+	</para>
+	<programlisting language="python"><![CDATA[
+		def __init__(self, agent_host):
+        self.agent_host = agent_host
+        self.x = 0
+        self.y = 0
+        self.z = 0        
+        self.yaw = 0
+        self.pitch = 0
+        self.akadaly = 0
+        self.akadaly2 = 0
+        self.uthossz = 9
+]]></programlisting>
+	<para>
+		Itt láthatjuk, hogy bevezettuk az akadály, akadály2, és az úthossz változókat. Előszőr 9-et move-ol előre a karakterünk, majd ennek az értéke növelődik minden szintlépéskor 5-tel a következő paranccsal: <command> self.uthossz = self.uthossz + 5 </command>.
+		A fordulás részünk még nem hagyatkozik arra, hogy mit lát Steve, ezért ha a <command> self.akadaly ==  self.uthossz</command>-al, első esetben pl. 9-el, akkor jobbra fordul egyet. A ciklus végén az <command>akadaly</command>-t nullázuk, az <command>akadaly2</command>-őt pedig növeljük eggyel. Ez azért fontos, vagyis az <command>akadaly2</command>, mert ha már egyszer fordul karakterünk akkor szintet lép Steve, ezzel szemléltetve a csigamozgást.
+	</para>
     </section>                  
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
