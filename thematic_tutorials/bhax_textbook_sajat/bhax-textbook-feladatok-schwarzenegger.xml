@@ -376,6 +376,10 @@ save_img(result_prefix + '.png', deprocess_image(np.copy(img)))
             Red Flower Hell: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>.      
         </para>
         <para>
+        	Tutor: Bukovinszki Márk
+        	Tutoriált: Bukovinszki Márk
+        </para>
+        <para>
             Megoldás forrása: a Red Flower Hell repójában.               
         </para>
         <para>

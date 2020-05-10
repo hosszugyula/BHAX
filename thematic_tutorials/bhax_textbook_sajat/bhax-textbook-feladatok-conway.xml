@@ -155,6 +155,9 @@
             </link>,                   
         </para>
         <para>
+            Tutoriált: Zselenák Flórián
+        </para>
+        <para>
             Ebben a megoldásban a saját RFH-3as döntőbejutó kódunkat mutatnám be:
         </para>
 <para>A mi ágensünk 38 pipacsot szedett össze a legutóbbi fejlesztés alapján. Ennek működését írnám le tömören. Előszöris a játék meghívásakor meghívódik a run() függvény. Ez addig fut, amíg a mission véget nem ér. Innen hívódik meg az action() függvény, ami folyamatosan lekéri az Observation From Gridet. A körülvevő objektumok alapján eldöntjük mit csináljon, minden blokkot figyelemmel kísérünk, és ahol pipacs van, felszedi(még ha egy szinttel lejjebb van, és a 3x3x3-as látómezőbe szerepel) majd visszalép a helyére és folyamatosan halad előre, illetve sarkot fordul, amíg nem talál pipacsot. Ha talált, lejjebb megy egy szinttel.
