@@ -15,6 +15,8 @@ from keras.preprocessing.image import load_img, save_img, img_to_array
 import numpy as np
 import scipy
 import argparse
+import tensorflow.compat.v1 as tensorflow
+tensorflow.disable_v2_behavior()
 
 from keras.applications import inception_v3
 from keras import backend as K
@@ -61,9 +63,9 @@ def deprocess_image(x):
         x = x.transpose((1, 2, 0))
     else:
         x = x.reshape((x.shape[1], x.shape[2], 3))
-    x /= 2.
-    x += 0.5
-    x *= 255.
+    x = x / 2.
+    x = x + 0.5
+    x = x * 255.
     x = np.clip(x, 0, 255).astype('uint8')
     return x
 
@@ -90,14 +92,14 @@ for layer_name in settings['features']:
     # We avoid border artifacts by only involving non-border pixels in the loss.
     scaling = K.prod(K.cast(K.shape(x), 'float32'))
     if K.image_data_format() == 'channels_first':
-        loss += coeff * K.sum(K.square(x[:, :, 2: -2, 2: -2])) / scaling
+        loss = loss + coeff * K.sum(K.square(x[:, :, 2: -2, 2: -2])) / scaling
     else:
-        loss += coeff * K.sum(K.square(x[:, 2: -2, 2: -2, :])) / scaling
+        loss = loss + coeff * K.sum(K.square(x[:, 2: -2, 2: -2, :])) / scaling
 
 # Compute the gradients of the dream wrt the loss.
 grads = K.gradients(loss, dream)[0]
 # Normalize gradients.
-grads /= K.maximum(K.mean(K.abs(grads)), K.epsilon())
+grads = grads / K.maximum(K.mean(K.abs(grads)), K.epsilon())
 
 # Set up function to retrieve the value
 # of the loss and gradients given an input image.
@@ -132,7 +134,7 @@ def gradient_ascent(x, iterations, step, max_loss=None):
         if max_loss is not None and loss_value > max_loss:
             break
         print('..Loss value at', i, ':', loss_value)
-        x += step * grad_values
+        x = x + step * grad_values
     return x
 
 
@@ -183,7 +185,7 @@ for shape in successive_shapes:
     same_size_original = resize_img(original_img, shape)
     lost_detail = same_size_original - upscaled_shrunk_original_img
 
-    img += lost_detail
+    img = img + lost_detail
     shrunk_original_img = resize_img(original_img, shape)
 
 save_img(result_prefix + '.png', deprocess_image(np.copy(img)))
