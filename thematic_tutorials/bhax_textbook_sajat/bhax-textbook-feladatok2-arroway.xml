@@ -9,19 +9,533 @@
     <section>
         <title>A BPP algoritmus Java megvalósítása</title>
         <para>
+            A módosított polártranszformációs normális generátor beprogramozása Java nyelven. Mutassunk rá, hogy a mi természetes saját megoldásunk (az algoritmus egyszerre két normálist állít elő, kell egy példánytag, amely a nem visszaadottat tárolja és egy logikai tag, hogy van-e tárolt vagy futtatni kell az algot.) és az OpenJDK, Oracle JDK-ban a Sun által adott OO szervezés ua.!Lásd még fóliák!Ismétlés: https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf(16-22 fólia)Ugyanezt írjuk meg C++ nyelven is! (lásd még UDPROG repó: source/labor/polargen)
         </para>
         <para>
             Megoldás videó:
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: <link xlink:href="Arroway/polargenteszt.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Arroway/polargenteszt.cpp</filename>
+            </link>
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A programunk C++-ban, ami három részből áll:
         </para>
-    </section>        
+<programlisting language="c"><![CDATA[##ifndef POLARGEN__H
+#define POLARGEN__H
+
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+
+class PolarGen
+{
+public:
+  PolarGen ()
+  {
+    nincsTarolt = true;
+    std::srand (std::time (NULL));
+  }
+   ~PolarGen ()
+  {
+  }
+  double kovetkezo ();
+
+private:
+  bool nincsTarolt;
+  double tarolt;
+
+};
+
+#endif
+]]></programlisting>
+    <para>
+        Láthatjuk, hogy elsősorban egy header fájl-ra lesz szükségünk.
+    </para>
+    <para>
+        Véletlen szám sorsoláshoz szükség van bizonyos előre megírt kódokra, melyeket #include-olni kell ahhoz, hogy a feladatot megoldhassuk. A kódunk elején a sorsolás egyik részét végző rand() függvény használatához a következő sort kell beilleszteni a kódunk elejére: <command> #include cstdlib </command>.
+    </para>
+<programlisting language="c"><![CDATA[#include "polargen.h"
+
+double
+PolarGen::kovetkezo ()
+{
+  if (nincsTarolt)
+    {
+      double u1, u2, v1, v2, w;
+      do
+    {
+      u1 = std::rand () / (RAND_MAX + 1.0);
+      u2 = std::rand () / (RAND_MAX + 1.0);
+      v1 = 2 * u1 - 1;
+      v2 = 2 * u2 - 1;
+      w = v1 * v1 + v2 * v2;
+    }
+      while (w > 1);
+
+      double r = std::sqrt ((-2 * std::log (w)) / w);
+
+      tarolt = r * v2;
+      nincsTarolt = !nincsTarolt;
+
+      return r * v1;
+    }
+  else
+    {
+      nincsTarolt = !nincsTarolt;
+      return tarolt;
+    }
+}
+
+]]></programlisting>
+    <para>
+        A <command> polargen.cpp </command> fájlban valósítjuk meg a polártranszformációt. Ehhez <command> include </command>-olnunk kell az előbbi <command> polargen.h </command> header fájlt.
+        Ebben az esetben akkor fogunk új számot készíteni, ha nincs tárolt számunk a tárolt változóban.
+    </para>
+<programlisting language="c"><![CDATA[#include <iostream>
+#include "polargen.h"
+#include "polargen.cpp"
+
+int
+main (int argc, char **argv)
+{
+  PolarGen pg;
+
+  for (int i = 0; i < 10; ++i)
+    std::cout << pg.kovetkezo () << std::endl;
+
+  return 0;
+}
+
+
+]]></programlisting>
+    <para>
+        Ezt a fájlt fogjuk fordítani és futtatni. A for ciklus miatt 10x fog lefutni a programunk, amely 10 szám kiiratását fogja eredményezni.
+    </para>
+    <para>
+        A futtatás után ez fogad minket:
+    </para>
+        <para>
+            <link xlink:href="Arroway/polargen.java">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Arroway/polargen.java</filename>
+            </link>
+        </para>
+<para>
+        És akkor jöjjön a Java programunk.
+    </para>
+<programlisting language="c"><![CDATA[public class polargen {
+    boolean nincsTarolt = true;
+    double tarolt;
+    public polargen() {
+
+        nincsTarolt = true;
+
+    }
+    public double kovetkezo() {
+        if(nincsTarolt) {
+            double u1, u2, v1, v2, w;
+            do {
+                u1 = Math.random();
+                u2 = Math.random();
+
+                v1 = 2*u1 - 1;
+                v2 = 2*u2 - 1;
+
+                w = v1*v1 + v2*v2;
+
+            } while(w > 1);
+
+            double r = Math.sqrt((-2*Math.log(w))/w);
+
+            tarolt = r*v2;
+            nincsTarolt = !nincsTarolt;
+
+            return r*v1;
+
+        } else {
+            nincsTarolt = !nincsTarolt;
+            return tarolt;
+        }
+    }
+
+    public static void main(String[] args) {
+        polargen g = new polargen();
+        for(int i=0; i<10; ++i)
+            System.out.println(g.kovetkezo());
+    }
+}
+
+]]></programlisting>
+    <para>
+        A Sun programozói is hasonló képpen oldották meg a random függvényt. A polár metódussal főként az úgynevezett nextGaussian() függvény dolgozik, ami a Random.java fájlból származtatható.
+    </para>
+    <para>
+        A program futtatása után ez fogad minket:
+    </para>
+    <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Arroway/polargen1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
 
     <section>
+        <title>Homokozó</title>
+        <para>
+            Írjuk át az első védési programot (LZW binfa) C++ nyelvről Java nyelvre, ugyanúgy működjön!
+            Mutassunk rá, hogy gyakorlatilag a pointereket és referenciákat kell kiirtani és minden máris működik (erre utal a feladat neve, hogy Java-ban minden referencia, nincs választás, hogy mondjuk egy
+            attribútum pointer, referencia vagy tagként tartalmazott legyen).
+            Miután már áttettük Java nyelvre, tegyük be egy Java Servletbe és a böngészőből GET-es kéréssel
+            (például a böngésző címsorából) kapja meg azt a mintát, amelynek kiszámolja az LZW binfáját!
+        </para>
+        <para>
+            Megoldás forrása: 
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+<programlisting language="java"><![CDATA[import java.io.FileInputStream;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+]]></programlisting>
+        <para>
+        A szükséges import sorok után létrehozzunk a fő <function> Binfa</function> osztályt.
+        </para>
+        <para>
+        Java-ban mivel nincsenek mutatók, kezdetben a fa egyenlő lesz a gyökérrel.
+        </para>
+<programlisting language="java"><![CDATA[
+public class Binfa {
+
+    private int id = 1;
+    private int depth, max_depth, count = 0;
+    private double avg_sum, disp_sum = 0;
+
+    public Binfa() {
+        tree = root;
+    }
+]]></programlisting>
+        <para>
+        Az <function>addItem()</function> metódus attól függően, hogy 0 vagy 1 elemet kap, bal vagy jobb oldalról adja a fához azt (0:bal, 1:jobb).
+        </para>
+<programlisting language="java"><![CDATA[
+
+    void addItem(int i) {
+        if(i == 1) {
+            if(tree.getRightChild() == null) {
+                Node newNode = new Node('1', tree.getChildDepth() + 1, id++);
+
+                tree.newRightChild(newNode);
+
+                tree = root;
+            }
+            else {
+                tree = tree.getRightChild();
+                depth = tree.getChildDepth();
+            }
+        }
+        else {
+            if(tree.getLeftChild() == null) {
+                Node newNode = new Node('0', tree.getChildDepth() + 1, id++);
+
+                tree.newLeftChild(newNode);
+                tree = root;
+            }
+            else {
+                tree = tree.getLeftChild();
+                depth = tree.getChildDepth();
+            }
+        }
+    }
+]]></programlisting>
+        
+        <para>
+        A következő metódusok/függvények az inorder, mélység, átlag és szórás kiírásában segítenek.
+        </para>
+    
+<programlisting language="java"><![CDATA[
+
+    
+    void Inorder(PrintWriter outstream) {
+
+        In(root, outstream);
+        
+        Depth(root);
+        Avg(root);
+        Disp(root);
+    }
+
+    public int depthOut() {
+        max_depth = depth = 0;
+        Depth(root);
+        return max_depth;
+    }
+
+    public double avgOut() {
+        count = 0;
+        avg_sum = 0.0;
+        Avg(root);
+        return avg_sum/count;
+    }
+
+    public double dispOut() {
+        disp_sum = 0.0;
+        Disp(root);
+        return Math.sqrt(disp_sum/--count);
+    }
+
+    public int maxDepth() {
+        return max_depth;
+    }
+
+    public double treeAvg() {
+        return avg_sum/count;
+    }
+]]></programlisting>
+
+        <para>
+        A Node osztály beágyazottként van jelen a programban. Ez reprezentál egy csomópontot a bináris fában.
+        Egy csomópontnak két gyermeke van: bal és jobb oldali, ezek szintén csomópontok. Ezeknek is lesz egy
+        azonosítója, konkrét értéke és mélysége.
+        </para>
+<programlisting language="java"><![CDATA[   
+    
+    class Node {
+
+        Node left;
+        Node right;
+
+        private int id;
+		private char value;
+		private int depth;
+
+        public Node(char value, int depth, int id) {
+            this.value = value;
+            this.depth = depth;
+            this.id = id;
+
+            left = null;
+            right = null;
+        }
+]]></programlisting>
+
+        <para>
+            Azt osztály további függvényeivel érhetjük el a bal vagy jobb oldali gyermeket, hozhatunk létre újakat,
+            kérhetjük el az értéküket vagy éppen az azonosítójukat.
+        </para>
+<programlisting language="java"><![CDATA[   
+
+        public Node getLeftChild() {
+            return left;
+        }
+
+        public Node getRightChild() {
+            return right;
+        }
+
+        public void newLeftChild(Node leftNode) {
+            left = leftNode;
+        }
+
+        public void newRightChild(Node rightNode) {
+            right = rightNode;
+        }
+
+        public char getChildValue() {
+            return value;
+        }
+
+        public int getChildDepth() {
+            return depth;
+        }
+
+        public int getChildId() {
+            return id;
+        }
+
+    }
+]]></programlisting>
+
+        <para>
+          Létrehozzuk a fát null értékkel, majd külön csomópontként a gyökeret, ami ’/’ értékkel, 0 mélységgel és azonosítóval rendelkezik.
+        </para>
+        
+<programlisting language="java"><![CDATA[   
+
+    private Node tree = null;
+    private Node root = new Node('/', 0, 0);
+
+]]></programlisting>
+
+        <para>
+            A <function> Depth </function> metódussal számoljuk ki a fa mélységét.
+        </para>
+<programlisting language="java"><![CDATA[   
+
+    public void Depth(Node n) {
+        if(n != null) {
+            Depth(n.getRightChild());
+            if(n.getChildDepth() > max_depth)
+                max_depth = n.getChildDepth();
+            Depth(n.getLeftChild());
+        }
+    }
+]]></programlisting>
+
+        <para>
+            Az <function> In </function> metódust az <function> Inorder() </function> hívja. Itt írjuk a fa értékeit a fájlba inorder módon (ezért szükséges a <function> PrintWriter </function> példány átadása is) rekurzívan.
+        </para>
+
+<programlisting language="java"><![CDATA[   
+
+    public void In(Node n, PrintWriter outstream) {
+        if(n != null) {
+            int i;
+
+            In(n.getRightChild(), outstream);
+
+            for(i = 0; i < n.getChildDepth() + 1; i++)
+                outstream.print("---");
+
+            outstream.print(n.getChildValue());
+            outstream.print("(");
+            outstream.print(n.getChildDepth());
+            outstream.println(")");
+            In(n.getLeftChild(), outstream);
+        }
+    }
+
+]]></programlisting>
+
+            <para>
+                Az <function> Avg()</function> az átlagot, a <function> Disp()</function> a szórást számolja ki.
+            </para>    
+    
+<programlisting language="java"><![CDATA[  
+    public void Avg(Node n) {
+        if(n != null) {
+            if(n.getRightChild() == null && n.getLeftChild() == null) {
+                count++;
+                avg_sum += n.getChildDepth();
+            }
+            Avg(n.getRightChild());
+            Avg(n.getLeftChild());
+        }
+    }
+
+    public void Disp(Node n) {
+        if(n != null) {
+            if(n.getRightChild() == null && n.getLeftChild() == null) {
+                disp_sum += (double) ((n.getChildDepth() - treeAvg()) * (n.getChildDepth() - treeAvg()));
+            }
+            Disp(n.getRightChild());
+            Disp(n.getLeftChild());
+        } 
+    }
+]]></programlisting>
+
+            <para>
+            A main függvényben először ellenőrizzük, hogy a felhasználó megfelelő számú argumentumot adott-e meg
+            és azt, hogy a -o kapcsoló jó helyen van-e.
+            </para>
+<programlisting language="java"><![CDATA[  
+
+    public static void main(String[] args) {
+
+        if(args.length != 3) {
+            System.out.println("Hasznalat:\n.Java Binfa bemeneti_fajl -o kimeneti_fajl");
+            System.exit(-1);
+        }
+
+        if(!"-o".equals(args[1])) {
+            System.out.println("Hasznalat:\n.Java Binfa bemeneti_fajl -o kimeneti_fajl");
+            System.exit(-1);
+        }
+]]></programlisting>
+
+            <para>
+            Az IO műveletek miatt a main további részét try-catch blokkokba kell írni, mert a nem elérhető fájl vagy IO
+            hiba kivételt generál. Létrehozzuk az íráshoz/olvasáshoz szükséges Stream-eket, példányosítjuk az osztályt,
+            majd beolvassuk a bemeneti fájl tartalmát. Ha a következő sor > karakter (vagy azzal kezdődik) vagy új
+            üres sor, akkor kihagyjuk. Az adott karakter bitmaszkolása után átadjuk az addItem() metódusnak az 1-est
+            vagy a 0-t. Kiírjuk az inorder fát, annak 3 tulajdonságát, zárjuk a Stream-eket, és kezeljük az esetleges
+            kivételeket.
+            </para>
+
+<programlisting language="java"><![CDATA[  
+
+        try {
+            FileInputStream in = new FileInputStream(new File(args[0]));
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(args[2])));
+            byte[] b = new byte[1];
+
+            Binfa bintree = new Binfa();
+
+            while(in.read(b) != -1) {
+                if(b[0] == 0x0a) {
+                    break;
+                }
+            }
+
+            boolean comment = false;
+
+            while(in.read(b) != -1) {
+                if(b[0] == 0x3e) {  // > char
+                    comment = true;
+                    continue;
+                }
+
+                if(b[0] == 0x0a) {  // new row
+                    comment = false;
+                    continue;
+                }
+
+                if(comment)
+                    continue;
+
+                if(b[0] == 0x4e)  // N char
+                    continue;
+
+                for(int i = 0; i < 8; ++i) {
+                    if((b[0] & 0x80) != 0)
+                        bintree.addItem(1);
+                    else
+                        bintree.addItem(0);
+                    
+                    b[0] <<= 1;
+                }
+            }
+
+                bintree.Inorder(out);
+                out.println("depth = " + bintree.maxDepth());
+                out.println("avg = " + bintree.avgOut());
+                out.println("var = " + bintree.dispOut());
+                out.close();
+                in.close();
+                
+        } catch(java.io.FileNotFoundException fNFE) {
+            fNFE.printStackTrace();
+        } catch(java.io.IOException ioE) {
+            ioE.printStackTrace();
+        }
+    }
+
+}
+
+
+]]></programlisting>  
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Arroway/binfa.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+        
+    </section>
+
+    <!--<section>
         <title>Java osztályok a Pi-ben</title>
         <para>
             Az előző feladat kódját fejleszd tovább: vizsgáld, hogy Vannak-e Java osztályok a Pi hexadecimális kifejtésében!
@@ -35,7 +549,180 @@
         <para>
             Tanulságok, tapasztalatok, magyarázat...
         </para>
-    </section>        
+    </section>-->
+    
+    <section>
+        <title>"Gagyi"</title>
+        <para>
+            Az ismert formális „while (x &lt;= t &amp;&amp; x >= t &amp;&amp;t != x);” tesztkérdéstípusra adj a szokásosnál
+            (miszerint x, t az egyik esetben az objektum által hordozott érték, a másikban meg az objektum
+            referenciája) „mélyebb” választ, írj Java példaprogramot mely egyszer végtelen ciklus, más x, t
+            értékekkel meg nem! A példát építsd a JDK Integer.java forrására, hogy a 128-nál inkluzív objektum
+            példányokat poolozza!
+        </para>
+        <para>
+            Megoldás forrása:
+        </para>
+<programlisting language="java"><![CDATA[public class Gagyi2
+{
+public static void main (String[]args)
+{
+Integer x = -128;
+Integer t = -128;
+System.out.println (x);
+System.out.println (t);
+while (x <= t && x >= t && t != x);
+}
+}
+
+]]></programlisting>
+        <para>
+            Akkor vizsgáljuk meg ezt a programot. Tudjuk, hogy ez le fog futni hiszen ugyanarra a számra <function> (-128) </function>, ugyanazt az objectet adja, mivel csak kiveszi a kész integert a poolból, vagyis a két cím <function> equal </function> lesz.
+        </para>
+<programlisting language="java"><![CDATA[public class Gagyi2
+{
+public static void main (String[]args)
+{
+Integer x = -129;
+Integer t = -129;
+System.out.println (x);
+System.out.println (t);
+while (x <= t && x >= t && t != x);
+}
+}
+
+]]></programlisting>        
+        <para>
+            Na most, nézzük meg ezt az esetet, amikor <function> -129 </function>-el dolgozunk. Ez a program lefog fagyni, és végtelen ciklus eredményez.
+            Nyissuk ki az <function> src.zip </function> fájlt, azon belül is az integer.java forrást.
+        </para>
+<programlisting language="java"><![CDATA[
+        public static Integer valueOf(int i) {
+            if (i >= IntegerCache.low && i <= IntegerCache.high)
+                eturn IntegerCache.cache[i + (-IntegerCache.low)];
+        return new Integer(i);
+]]></programlisting>
+        <para>
+            Mivel láthatjuk, hogy ebben az esetben az if nem teljesül, így folyamatosan a <function> return new Integer(i); </function> fog lefutni. Tehát a két integernél kettő új obejektum fog kreálódni, más címmel és máshol a tárban, igy az összehasonlításuk mindig hamis lesz.
+        </para>
+    </section>
+
+    
+    <section>
+        <title>Yoda</title>
+        <para>
+            Írjunk olyan Java programot, ami java.lang.NullPointerEx-el leáll, ha nem követjük a Yoda
+conditions-t! <link xlink:href="https://en.wikipedia.org/wiki/Yoda_conditions">https://en.wikipedia.org/wiki/Yoda_conditions</link>
+        </para>
+        <programlisting language="java"><![CDATA[public class Yoda{
+
+     public static void teszt1(){
+     
+         String yoda = "yodahola";
+         
+         if (yoda.equals("yodahola")){
+             System.out.println(yoda);
+         }
+     }
+
+    public static void teszt2(){
+    
+        String yodaNull = null;
+        
+        if(yodaNull.equals("yodahola")){
+            System.out.println(yodaNull);
+        }
+    }
+
+
+
+public static void main(String[] args){
+    
+    teszt1();
+    teszt2();
+    }
+}
+
+]]></programlisting>  
+    <para>
+        Az első programrésznél <function> teszt1 </function>, semmi sem fog különösen történni, a programunk lefordul majd lefut és kiírja amit akarunk.
+    </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Arroway/yoda1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    <para>
+        A második programrésznél <function> teszt2 </function>, a program lefordul, viszont futtatáskor a következőt kapjuk:<function> Exception in thread "main" java.lang.NullPointerException ... </function>.
+    </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Arroway/yoda2.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+    
+    <section>
+        <title>Kódolás from scratch</title>
+        <para>
+            Induljunk ki ebből a tudományos közleményből: <link xlink:href="http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbp-alg.pdf">http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbp-alg.pdf</link> és csak ezt tanulmányozva írjuk meg Java nyelven a BBP algoritmus megvalósítását!
+            Ha megakadsz, de csak végső esetben: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#pi_jegyei">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#pi_jegyei</link> (mert ha csak lemásolod, akkor pont az a fejlesztői élmény marad ki,
+            melyet szeretném, ha átélnél).
+        </para>
+        <para>
+            Megoldás forrása: 
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            A pi kiszámítására adott a BBP formula:
+        </para>
+        <para>
+          <figure>
+            <title>BBP formula (forrás: <link xlink:href="http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbp-alg.pdf">bbp-alg.pdf</link>)</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="Arroway/bbp.png"/>
+                </imageobject>
+                <textobject>
+                    <phrase>BBP formula (forrás: <link xlink:href="http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbp-alg.pdf">bbp-alg.pdf</link>)</phrase>
+                </textobject>
+            </mediaobject>
+          </figure>
+        </para>
+        <para>
+            A “Bailey-Borwein-Plouffe” (BBP) algoritmust 1995-ben fedezték fel, majd 1996-ban publikálták. A BBP formulán alapszik, a következő példa ezt szemlélteti. Az main-ben létrehozunk egy <computeroutput> y </computeroutput> változót, ezt fogjuk majd kiíratni a végén, vagyis a Pi-t . Az main konstruktora kap egy számot, ez határozza majd meg, hogy milyen pontossággal kell dolgoznia a programnak, azaz a for ciklus hányszor fusson le. Ha egy adott x értékre kiszámoltuk a sort, akkor hozzáadjuk az <computeroutput>osszeg</computeroutput> változóhoz, ezt i=x-szor ismételjük.
+        </para>
+        <programlisting language="java"><![CDATA[import java.util.Scanner;
+public class Pi {
+
+public static void main(String[] args) {
+        System.out.println("Add meg milyen pontossággal akarod megadni a Pi értékét?");
+        String line = System.console().readLine();
+        double x = Double.parseDouble(line);
+        double y = 0.0;
+
+        for(double i = 0; i <= x; i++)
+        {
+            y = y + (1.0/Math.pow(16.0,i))*((4.0/(8.0*i + 1.0))-(2.0/(8.0*i + 4.0)) - 
+            (1.0/(8.0*i + 5.0)) - (1.0/(8.0*i + 6.0)));
+        }
+        System.out.println("Pontosság: " + y);
+    }
+}
+
+]]></programlisting>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Arroway/pi.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>
+
+
+
         
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
