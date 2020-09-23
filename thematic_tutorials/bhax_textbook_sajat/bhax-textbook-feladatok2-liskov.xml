@@ -1,0 +1,505 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Liskov!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Liskov helyettesítés sértése</title>
+        <para>
+            Írjunk olyan OO, leforduló Java és C++ kódcsipetet, amely megsérti a Liskov elvet! Mutassunk rá a
+            megoldásra: jobb OO tervezés.
+            https://arato.inf.unideb.hu/batfai.norbert/PROG2/Prog2_1.pdf (93-99 fólia)
+            (számos példa szerepel az elv megsértésére az UDPROG repóban, lásd pl. source/binom/Batfai-
+            Barki/madarak/)
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Liskov/liskovsert.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/liskov/liskovsert.cpp</filename>
+            </link>
+        </para>
+
+        <para>
+            Láthatjuk, hogy ez így hibás.
+        </para>
+<programlisting language="c"><![CDATA[
+// ez a T az LSP-ben
+class Szamitogep {};
+    public:
+        void teleprolmukodo(){};
+
+// ez a két osztály alkotja a "P programot" az LPS-ben
+class Program {
+public:
+    void fgv (Szamitogep &szamitogep) {}
+        szamitogep.teleprolmukodo();
+    
+};
+
+// itt jönnek az LSP-s S osztályok
+class TeleprolMukodoSzm : public Szamitogep {
+public:
+};
+
+class Laptop : public Szamitogep // ezt úgy is lehet olvasni, hogy a laptop tud telep nélkül működni
+{};
+
+int main ( int argc, char **argv )
+{
+    Program program;
+    Szamitogep szamitogep;
+    program.fgv ( szamitogep );
+    
+    Asztali asztali;
+    program.fgv ( asztali );
+    
+    Laptop laptop;
+    program.fgv ( laptop ); // sérül az LSP, mert a P::fgv csak telep nélkül működtetné a laptopot, ami ugye lehetetlen.
+}
+
+
+]]></programlisting>
+        <para>
+            Viszont ha így írjuk meg akkor már sokkal elfogadhatóbb.
+        </para>
+<programlisting language="c"><![CDATA[
+// ez a T az LSP-ben
+class Szamitogep {};
+    //public:
+        //void teleprolmukodo(){};
+        
+// ez a két osztály alkotja a "P programot" az LPS-ben
+class Program {
+public:
+    void fgv (Szamitogep &szamitogep) {}
+    
+};
+
+// itt jönnek az LSP-s S osztályok
+class TeleprolMukodoSzm : public Szamitogep {
+public:
+    virtual void teleprolmukodo() {};
+
+};
+
+class Asztali: public TeleprolMukodoSzm
+{};
+
+class Laptop : public Szamitogep // ezt úgy is lehet olvasni, hogy a laptop tud telep nélkül működni
+{};
+
+int main ( int argc, char **argv )
+{
+    Program program;
+    Szamitogep szamitogep;
+    program.fgv ( szamitogep );
+    
+    Asztali asztali;
+    program.fgv ( asztali );
+    
+    Laptop laptop;
+    program.fgv ( laptop );
+}
+
+]]></programlisting>
+
+</section>
+
+    <section>
+        <title>Hello, Android!</title>
+        <para>
+        Élesszük fel az SMNIST for Humans projektet!
+        https://gitlab.com/nbatfai/smnist/tree/master/forHumans/SMNISTforHumansExp3/app/src/main
+        Apró módosításokat eszközölj benne, pl. színvilág.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Liskov/SMNISTFORHUMANS">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/liskov/SMNISTFORHUMANS</filename>
+            </link>
+        </para>
+
+<programlisting language="Java"><![CDATA[
+int[] bgColor =
+            {
+                    android.graphics.Color.rgb(54, 49, 49), //Itt változtattam a színekek
+                    android.graphics.Color.rgb(220, 0, 0)   //
+            };
+
+]]></programlisting>
+<para>
+</para>
+
+<programlisting language="Java"><![CDATA[
+  private void cinit(android.content.Context context) {
+
+        textPaint.setColor(android.graphics.Color.BLACK); //Szürkéről feketére változtattam
+        textPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        textPaint.setTextSize(50);
+
+        msgPaint.setColor(android.graphics.Color.WHITE); //Szürkéről fehérre változtattam
+        msgPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        msgPaint.setAntiAlias(true);
+        msgPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
+        msgPaint.setTextSize(40);
+
+        dotPaint.setColor(android.graphics.Color.BLACK);
+        dotPaint.setStyle(android.graphics.Paint.Style.FILL_AND_STROKE);
+        dotPaint.setAntiAlias(true);
+        dotPaint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        dotPaint.setTextSize(50);
+
+        borderPaint.setStrokeWidth(2);
+        borderPaint.setColor(android.graphics.Color.GRAY);
+        fillPaint.setStyle(android.graphics.Paint.Style.FILL);
+        fillPaint.setColor(android.graphics.Color.BLUE); //Citromsárgáról kékre változtattam
+
+]]></programlisting>
+     
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Liskov/SMNIST.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+
+    <section>
+        <title>Szülő-gyerek</title>
+        <para>
+            Írjunk Szülő-gyerek Java és C++ osztálydefiníciót, amelyben demonstrálni tudjuk, hogy az ősön keresztül csak az ős üzenetei küldhetőek! Lásd fóliák! <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/PROG2/Prog2_1.pdf">Prog2_1.pdf </link> (98. fólia)
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Liskov/szulo.java">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/liskov/szulo.java</filename>
+            </link> 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Liskov/szulo.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/liskov/szulo.cpp</filename>
+            </link> 
+
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Az objektumorientált programozásban azért használjuk az öröklést, mert ezáltal egy létező osztály tulajdonságait alapul véve tudunk új osztályt lérehozni.
+            Az új osztály (azaz a gyerekosztály) használhatja a szülőosztály tulajdonságait és metódusait, de felülbírálhatja azokat, illetve létre is hozhat újakat.
+        </para>
+        <para>
+            Java:
+        </para>
+        <para>
+            Minden objektum referencia, mindig dinamikus a kötés.
+            De ezzel nem küldhetjük a gyerekosztály által hozott új üzeneteket.
+
+        </para>
+        <programlisting language="java"><![CDATA[class szulo
+{
+    protected int m_kor;
+    protected String m_nev;
+    public void setKor(int kor) {
+        m_kor = kor;
+    }
+    
+    public void setNev(String nev) {
+        m_nev = nev;
+    }
+    
+    public int getNev() {
+        return m_kor;
+    }
+}
+
+class gyerek extends szulo
+{
+    public String getNev() {
+        return m_nev;
+    }
+}
+
+class szgy
+{
+    public static void main (String args[])
+    {
+        szulo s = new gyerek();
+        s.setNev("Apa");
+        s.setKor(60);
+        
+        gyerek gy = new gyerek();
+        s.setNev("Geza");
+        s.setKor(15);
+        
+        System.out.println(gy.getNev() + " " + s.getNev());
+    }
+}
+
+]]></programlisting>
+    
+    <para>
+        A Java programunknál a következő hibába ütközünk :
+    </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Liskov/szulojava.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+        <para>
+            C++ :
+        </para>
+        <para>
+            Csak akkor van dinamikus kötés, ha a viselkedés virtuálisra van deklarálva. Ugyanúgy igaz, hogy ősosztály referencián vagy pointeren keresztül, csak az ős üzenetei küldhetőek.
+        </para>
+        <programlisting language="C"><![CDATA[#include <iostream>
+
+class Teglalap
+{
+    public:
+        int m_szelesseg;
+        int m_magassag;
+        
+        Teglalap(int szelesseg, int magassag) {
+            m_szelesseg = szelesseg;
+            m_magassag = magassag;
+        }
+        
+        int getSzelesseg(){
+            return m_szelesseg;
+        }
+        
+        int getMagassag(){
+            return m_magassag;
+        }
+};
+    
+class Negyzet: public Teglalap
+{
+    public:
+        Negyzet(int oldal): Teglalap(oldal, oldal)
+        {
+            m_szelesseg = oldal;
+            m_magassag = oldal;
+        }
+        
+        int getTerulet(){
+            return m_szelesseg * m_magassag;
+        }
+};
+    
+int main ()
+{
+    Teglalap* r = new Negyzet(10);
+    Negyzet* s = new Negyzet(10);
+        
+    std::cout << s->getTerulet() << r->getTerulet() << std::endl;
+}
+
+]]></programlisting>
+    
+    <para>
+        A fordítás sikertelen lesz, ugyanis az altípus új függvényei nem lesznek elérhetőek.   
+    </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Liskov/szulocpp.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>
+
+    <section>
+        <title>Ciklomatikus komplexitás</title>
+        <para>
+            Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalom
+            tekintetében a https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf (77-79
+            fóliát)!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Liskov/s">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/liskov/</filename>
+            </link>
+        </para>
+        <para>
+        Gráfelméletben a ciklomatikus komplexitás a vezérlési gráfban megtalálható független utak maximális számát jelenti.
+        Két út független, ha mindkettőben létezik olyan pont vagy él, amelyik nem eleme a másik útnak.
+        Képlete: M = E - N + 2P, ahol E a gráf éleinek száma, N a gráfban lévő csúcsok száma és P az összefüggő komponensek száma.
+        </para>
+
+        <para>
+        A ciklomatikus komplexitás egy metrika is, amely forráskód alapján, számértékben határozza meg a szoftverünk komplexitását.
+        A korábban megírt programok függvényeinek vizsgálatára én a lizard alkalmazást használtam.
+        </para>
+        <para>
+            Elsőnek egy egyszerű programot néztem meg, a liskovos feladatot :
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Liskov/complex1.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+        <para>
+            Másodjára már egy komplex programot, a Binfát java változatban :
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Liskov/complex2.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>
+
+    <section>
+        <title>Anti OO</title>
+        <para>
+            A BBP algoritmussal 5 a Pi hexadecimális kifejtésének a 0. pozíciótól számított 10 6, 107, 108 darab
+            jegyét határozzuk meg C, C++, Java és C# nyelveken és vessük össze a futási időket!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html#id561066">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apas03.html#id561066</link>
+        </para>
+
+        <para>
+        Ahhoz, hogy a futási időket megkapjuk terminálban, az eredeti kódban a d értékét kell állítanunk, nyelvtől függetlenül.
+        Ha a 0. pozíciótól számított 10^6 darab jegyet szeretnénk meghatározni, akkor a for ciklusban kezdésképp a d-nek 1000000-t kell beírnunk.
+
+    <programlisting language="Java"><![CDATA[
+for(int d=1000000; d<1000001; ++d) {
+            
+            d16Pi = 0.0d;
+            
+            d16S1t = d16Sj(d, 1);
+            d16S4t = d16Sj(d, 4);
+            d16S5t = d16Sj(d, 5);
+            d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - Math.floor(d16Pi);
+            
+            jegy = (int)Math.floor(16.0d*d16Pi);
+            
+        }
+]]>
+    </programlisting>
+</para>
+<screen><![CDATA[$ gyula@gyula-X550JK:~/Documents/prog2$ ./PiBBPBench1 
+6
+1.777196
+gyula@gyula-X550JK:~/Documents/prog2$ java PiBBPBench
+6
+1.549
+
+]]></screen>     
+
+
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="./Liskov/csbench1.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+
+<para>
+Látható, hogy ennél a "kis" értéknél még - a rendszerünk teljesítményétől függetlenül - rövid idő alatt megtörténik a futtatás.
+Nálam szinte egy időben, körülbelül 1.5-1.7 másodpercig tartott a bench program C, C++ és Java átiratának futtatása is.
+A C# átirat fordításához és futtatásához azonban online compiler használatához kellett folyamodnom, így az érték kb. 2,5 másodpercre nőtt.
+</para>
+
+<para>
+Át is térhetünk a 10^7 darab jegy meghatározásához. Ahhoz, hogy az új értékhez tartozó futási időket kapjuk, a d változóban tárolt nullák számát meg kell növelnünk eggyel.
+<programlisting language="Java"><![CDATA[
+for(int d=10000000; d<10000001; ++d) {
+            
+            d16Pi = 0.0d;
+            
+            d16S1t = d16Sj(d, 1);
+            d16S4t = d16Sj(d, 4);
+            d16S5t = d16Sj(d, 5);
+            d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - Math.floor(d16Pi);
+            
+            jegy = (int)Math.floor(16.0d*d16Pi);
+            
+        }
+]]>
+</programlisting>
+</para>
+
+<para>
+Ha ez megvan, akkor az előbb látott módon indulhat a fordítás, majd a futtatás.
+Az eredeti értékeinkhez képest most jelentősen több időt vett igénybe a kódok lefutása.
+Nálam 3 és fél másodperc helyett ezúttal 18-20 másodpercet vett igénybe a folyamat a Java, C és C++ átiratoknál, míg a C# átirat 53 másodpercet.
+</para>
+<screen><![CDATA[$ gyula@gyula-X550JK:~/Documents/prog2$ ./PiBBPBench1 
+7
+21.293616
+gyula@gyula-X550JK:~/Documents/prog2$ java PiBBPBench
+7
+18.576
+]]></screen>     
+
+
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="./Liskov/csbench2.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+<para>
+A 10^8 darab jegy meghatározásához is csak a nullák számán kell változtatni az új értékek megszerzéséhez.
+<programlisting language="Java"><![CDATA[
+for(int d=100000000; d<100000001; ++d) {
+            
+            d16Pi = 0.0d;
+            
+            d16S1t = d16Sj(d, 1);
+            d16S4t = d16Sj(d, 4);
+            d16S5t = d16Sj(d, 5);
+            d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - Math.floor(d16Pi);
+            
+            jegy = (int)Math.floor(16.0d*d16Pi);
+            
+        }
+]]>
+</programlisting>
+</para>
+
+<para>
+A korábbi, egy perc alatti értékeimhez képest most a C, C++ és a Java változat körülbelül 3-5 perc alatt futott le.
+A C# átirat online compiler használatával több, mint 10.5 perc alatt futott csak le.
+</para>
+<screen><![CDATA[$ gyula@gyula-X550JK:~/Documents/prog2$ ./PiBBPBench1 
+12
+245.961797
+gyula@gyula-X550JK:~/Documents/prog2$ java PiBBPBench
+12
+219.316
+]]></screen>     
+
+
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="./Liskov/csbench3.png" format="PNG"/>
+                </imageobject>
+            </mediaobject>
+    </section>     
+
+</chapter>                
