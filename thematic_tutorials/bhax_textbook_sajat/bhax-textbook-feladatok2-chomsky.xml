@@ -1,0 +1,373 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Chomsky!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Encoding</title>
+        <para>
+            Fordítsuk le és futtassuk a Javat tanítok könyv MandelbrotHalmazNagyító.java forrását úgy, hogy a
+            fájl nevekben és a forrásokban is meghagyjuk az ékezetes betűket!
+            <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/adatok.html"></link>
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Chomsky2/MandelbrotHalmazNagyító.java">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky2/MandelbrotHalmazNagyító.java</filename>
+            </link>
+        </para>
+        <para>
+            A programot a <command> javac MandelbrotHalmazNagyító.java </command> paranccsal fordítjuk, majd a futtatni a <command> java MandelbrotHalmazNagyító </command> paranccsal tudjuk.
+        </para>
+        <para>
+            Az <command>s</command> billentyű lenyomásával egy felvétel kép készül az aktív ablakban számolt fraktálról.
+        </para>
+        <para>
+            Az <command>n</command> billentyű lenyomásával növeljük a halmaz kiszámolásának pontosságát, 256-al megnöveljük az iterációk számát.
+        </para>
+        <para>
+            Az <command>m</command> billentyű lenyomásával nagyobb ugrással növeljük a halmaz kiszámolásának pontosságát, 10*256-al megnöveljük az iterációk számát.
+        </para>
+        <para>
+            Az <command>egérmutató bal gombjával</command> kijelöljük a nagyítandó terület bal felső sarkát, az egér vonszolásával megadjuk a terület nagyságát, az egérgomb felengedésére új ablakban megkezdődik a kijelölt terület nagyítása.
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chomsky2/MandelbrotHalmaz.png" format="PNG" />
+            </imageobject>
+        </mediaobject> 
+    </section>
+
+    <section>
+        <title>l334d1c4</title>
+        <para>
+            Írj olyan OO Java vagy C++ osztályt, amely leet cipherként működik, azaz megvalósítja ezt a betű
+            helyettesítést: <link xlink:href="https://simple.wikipedia.org/wiki/Leet">https://simple.wikipedia.org/wiki/Leet</link> (Ha ez első részben nem tetted meg, akkor írasd
+            ki és magyarázd meg a használt struktúratömb memóriafoglalását!)
+        </para>
+        <para>
+            Megoldás forrása:<link xlink:href="Chomsky2/l334d1c4.java">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky2/l334d1c4.java</filename>
+            </link>
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            A programhoz a beolvasás és a random számok generálása miatt kellenki fog 4 import sor:
+        </para>
+        <programlisting language="java"><![CDATA[
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Random;
+]]></programlisting>
+        <para>
+            A LexerData osztály az adott karakterekhez tartozó lehetséges megfelelőket tartalmazza tömbökben.
+        </para>
+        <programlisting language="java"><![CDATA[class LexerData {
+    String[] a = {"4", "4", "@", "/-\\"};
+    String[] b = {"b", "8", "|3", "|}"};
+    String[] c = {"c", "(", "<", "{"};
+    String[] d = {"d", "|)", "|]", "|}"};
+    String[] e = {"3", "3", "3", "3"};
+    String[] f = {"f", "|=", "pf", "|#"};
+    String[] g = {"g", "6", "[", "[+"};
+    String[] h = {"h", "4", "|-|", "[-]"};
+    String[] i = {"1", "1", "|", "!"};
+    String[] j = {"j", "7", "_|", "_/"};
+    String[] k = {"k", "|<", "1<", "|{"};
+    String[] l = {"l", "1", "|", "|_"};
+    String[] m = {"m", "44", "(V)", "|\\/|"};
+    String[] n = {"n", "|\\|", "/\\/", "/V"};
+    String[] o = {"0", "0", "()", "[]"};
+    String[] p = {"p", "/o", "|D", "|o"};
+    String[] q = {"q", "9", "O_", "(,)"};
+    String[] r = {"r", "12", "12", "|2"};
+    String[] s = {"s", "5", "$", "$"};
+    String[] t = {"t", "7", "7", "'|'"};
+    String[] u = {"u", "|_|", "(_)", "[_]"};
+    String[] v = {"v", "\\/", "\\/", "\\/"};
+    String[] w = {"w", "VV", "\\/\\/", "(/\\)"};
+    String[] x = {"x", "%", ")(", ")("};
+    String[] y = {"y", "y", "y", "y"};
+    String[] z = {"z", "2", "7_", ">_"};
+    String[] a0 = {"D", "0", "D", "0"};
+    String[] a1 = {"I", "I", "L", "L"};
+    String[] a2 = {"Z", "Z", "Z", "e"};
+    String[] a3 = {"E", "E", "E", "E"};
+    String[] a4 = {"h", "h", "A", "A"};
+    String[] a5 = {"S", "S", "S", "S"};
+    String[] a6 = {"b", "b", "G", "G"};
+    String[] a7 = {"T", "T", "j", "j"};
+    String[] a8 = {"X", "X", "X", "X"};
+    String[] a9 = {"g", "g", "j", "j"};
+}]]></programlisting>
+        <para>
+            A LexerJava osztályban példányosítjuk az előzőt, majd egy Random-ot is.
+            Beolvassuk a sort, ami ha üres, akkor vége is a programnak, ha nem, akkor viszont kisbetűssé alakítjuk. A kesz String-be épül fel majd az új szó. Végigmegyünk a beolvasott soron, és sorra megvizsgáljuk a karaktereit: ha pl. a, akkor egy neki megfeleltetett karaktert választunk véletlenszerűen. Ha az olvasott karakter olyan, aminek nincs megfeleltetés (pl. space), akkor azt átalakítás nélkül írjuk hozzá a szóhoz és a kész szót kiírjuk.
+        </para>
+        <programlisting language="java"><![CDATA[public class l334d1c4 {
+    
+    LexerData ld = new LexerData();
+    Random rand = new Random();
+    
+    public l334d1c4() {
+        
+        while (true) {
+            String sor = readLine();
+            if(sor.isEmpty())
+                break;
+            sor = sor.toLowerCase();
+            String kesz = "";
+            for(int i = 0; i < sor.length(); ++i) {
+                char c = sor.charAt(i);
+                if(c == 'a') {
+                    kesz += ld.a[getRandInRange(0, 4)];
+                } else if (c == 'b') {
+                    kesz += ld.b[getRandInRange(0, 4)];
+                } else if (c == 'c') {
+                    kesz += ld.c[getRandInRange(0, 4)];
+                } else if (c == 'd') {
+                    kesz += ld.d[getRandInRange(0, 4)];
+                } else if (c == 'e') {
+                    kesz += ld.e[getRandInRange(0, 4)];
+                } else if (c == 'f') {
+                    kesz += ld.f[getRandInRange(0, 4)];
+                } else if (c == 'g') {
+                    kesz += ld.g[getRandInRange(0, 4)];
+                } else if (c == 'h') {
+                    kesz += ld.h[getRandInRange(0, 4)];
+                } else if (c == 'i') {
+                    kesz += ld.i[getRandInRange(0, 4)];
+                } else if (c == 'j') {
+                    kesz += ld.j[getRandInRange(0, 4)];
+                } else if (c == 'k') {
+                    kesz += ld.k[getRandInRange(0, 4)];
+                } else if (c == 'l') {
+                    kesz += ld.l[getRandInRange(0, 4)];
+                } else if (c == 'm') {
+                    kesz += ld.m[getRandInRange(0, 4)];
+                } else if (c == 'n') {
+                    kesz += ld.n[getRandInRange(0, 4)];
+                } else if (c == 'o') {
+                    kesz += ld.o[getRandInRange(0, 4)];
+                } else if (c == 'p') {
+                    kesz += ld.p[getRandInRange(0, 4)];
+                } else if (c == 'q') {
+                    kesz += ld.q[getRandInRange(0, 4)];
+                } else if (c == 'r') {
+                    kesz += ld.r[getRandInRange(0, 4)];
+                } else if (c == 's') {
+                    kesz += ld.s[getRandInRange(0, 4)];
+                } else if (c == 't') {
+                    kesz += ld.t[getRandInRange(0, 4)];
+                } else if (c == 'u') {
+                    kesz += ld.u[getRandInRange(0, 4)];
+                } else if (c == 'v') {
+                    kesz += ld.v[getRandInRange(0, 4)];
+                } else if (c == 'w') {
+                    kesz += ld.w[getRandInRange(0, 4)];
+                } else if (c == 'x') {
+                    kesz += ld.x[getRandInRange(0, 4)];
+                } else if (c == 'y') {
+                    kesz += ld.y[getRandInRange(0, 4)];
+                } else if (c == 'z') {
+                    kesz += ld.z[getRandInRange(0, 4)];
+                } else if (c == '0') {
+                    kesz += ld.a0[getRandInRange(0, 4)];
+                } else if (c == '1') {
+                    kesz += ld.a1[getRandInRange(0, 4)];
+                } else if (c == '2') {
+                    kesz += ld.a2[getRandInRange(0, 4)];
+                } else if (c == '3') {
+                    kesz += ld.a3[getRandInRange(0, 4)];
+                } else if (c == '4') {
+                    kesz += ld.a4[getRandInRange(0, 4)];
+                } else if (c == '5') {
+                    kesz += ld.a5[getRandInRange(0, 4)];
+                } else if (c == '6') {
+                    kesz += ld.a6[getRandInRange(0, 4)];
+                } else if (c == '7') {
+                    kesz += ld.a7[getRandInRange(0, 4)];
+                } else if (c == '8') {
+                    kesz += ld.a8[getRandInRange(0, 4)];
+                } else if (c == '9') {
+                    kesz += ld.a9[getRandInRange(0, 4)];
+                } else {
+                    kesz += c;
+                }
+            }
+            
+            System.out.println(kesz);
+        }
+        
+    }]]></programlisting>
+        <para>
+            A getRandInRange() függvény a megadott határok közt generál egészet, a mi esetünkben a 4 elemű tömbök és indexeik miatt ezek 0 és 4.
+        </para>
+        <programlisting language="java"><![CDATA[
+public int getRandInRange(int min, int max) {
+return rand.ints(min, max).findAny().getAsInt();
+    }]]></programlisting>
+        <para>
+            A readLine() függvény olvassa be az adott sort, és adja vissza Stringként.
+        </para>
+        <programlisting language="java"><![CDATA[
+public String readLine() {
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String line = "";
+try {
+    line = br.readLine();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+return line;
+    }]]></programlisting>
+        <para>
+            A main-ben csak az osztály konstruktorát hívjuk.
+        </para>
+        <programlisting language="java"><![CDATA[
+public static void main(String[] args) {
+        
+new l334d1c4();
+}
+}]]></programlisting>
+        <para>
+          <figure>
+            <title>Java l334d1c4</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="Chomsky2/lexer.png"/>
+                </imageobject>
+                <textobject>
+                    <phrase>Java l334d1c4</phrase>
+                </textobject>
+            </mediaobject>
+          </figure>
+        </para>
+    </section>
+
+
+<section>
+        <title>Paszigráfia Rapszódia OpenGL full screen vizualizáció</title>
+        <para>
+            Lásd vis_prel_para.pdf! Apró módosításokat eszközölj benne, pl. színvilág, textúrázás, a szintek jobb
+            elkülönítése, kézreállóbb irányítás.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Chomsky2/para12.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky2/para12.cpp</filename>
+            </link>
+        </para>
+        <para>
+            A program fordítását a <command>g++ para12.cpp -o para -lboost_system -lGL -lGLU -lglut -I/usr/include/SDL2 -lSDL2 -lSDL2_image </command> paranccsal hajtjuk végre.
+        </para>
+        <screen>
+            A program futtatását pedig a <command> ./para 36:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0:1:0 cube1.png cube2.png cube3.png cube4.png cube5.png cube6.png </command>
+        </screen>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chomsky2/parapiramis.png" format="PNG" />
+            </imageobject>
+        </mediaobject> 
+    </section>         
+
+    <section>
+        <title>Perceptron osztály</title>
+        <para>
+            Dolgozzuk be egy külön projektbe a projekt Perceptron osztályát!
+            Lásd <link xlink:href="https://youtu.be/XpBnR31BRJY">https://youtu.be/XpBnR31BRJY</link>       
+        </para>
+        <para>
+        Megoldás forrása: <link xlink:href="Chomsky2/perceptron.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_sajat/Chomsky2/perceptron.cpp</filename>
+            </link>
+        </para>
+        <blockquote><attribution>Wikipedia</attribution>
+        <para>
+            In machine learning, the perceptron is an algorithm for supervised learning of binary classifiers. A binary classifier is a function which can decide whether or not an input, represented by a vector of numbers, belongs to some specific class. It is a type of linear classifier, i.e. a classification algorithm that makes its predictions based on a linear predictor function combining a set of weights with the feature vector.
+        </para>
+        </blockquote>
+        <para>
+            Perceptron felépítése három fő részből áll: 1. Retina - bemeneti jeleket fogadó
+            cellákat tartalmazza. 2. Asszociatív cellák - összegzik a hozzájuk érkező jeleket,
+            impulzusokat. 3. Perceptronok kimenetele - összegzi a hozzájuk érkező jeleket,
+            impulzusokat.    
+        </para>
+        <para>
+            Feladatunk pontosan az lesz, hogy adujunk egy képet bemenetkénz, MandelbrotHalmazos
+            kép kézre esik, és ennek a képnek fogja venni az egyik színkódját ami majd a többrétegű
+            perceptronunk bemenete lesz.    
+        </para>
+        <para>
+            Szükségünk lesz a többrétegűségre ezért kell az mlp (Multi Layer Perceptron) könyvtár,
+            és PNG képpel fogunk dolgozni ezért a png könyvtárra is szükség lesz:
+        </para>
+         <programlisting language="java"><![CDATA[#include <iostream>
+#include "mlp.hpp"
+#include <png++/png.hpp>]]></programlisting>
+        <para> A main elején a képünk beolvasása történik, így tudunk rajta dolgozni, még hozzá a
+            "get_width" és a "get_height" segítségével. Valamint a new operátor segítségével
+            létrehozzuk a perceptronunkat. </para>
+        <programlisting language="C"><![CDATA[
+int main (int argc, char **argv)
+{
+    png::image <png::rgb_pixel> png_image (argv[1]);
+    int size = png_image.get_width()*png_image.get_height();
+    
+    Perceptron* p = new Perceptron(3, size, 256, 1);
+]]></programlisting>
+        <para> 
+            Létrehounk egy double típusu változót, valamint a for ciklusok végig mennek a kép
+            szélesség és maggasági pontokon. A képpontokat image tárolni fogja a képállomány vörös
+            színkomponensét, ahogyan azt a kódban megadtuk, a value pedig azt a double típusú számot
+            amit majd kiíratunk a végén. 
+        </para>
+        <programlisting language="C"><![CDATA[
+    double* image = new double[size];
+    
+    for(int i {0}; i<png_image.get_width(); ++i)
+         for(int j {0}; j<png_image.get_height(); ++j)
+            image[i*png_image.get_width()+j] = png_image[i][j].red;
+
+    double value = (*p) (image);
+
+    std::cout << value << std::endl;
+]]></programlisting>
+        <para> 
+            Memóriában felszabadítjuk a szükséges helyet: 
+        </para>
+        <programlisting language="C"><![CDATA[
+    delete p;
+    delete [] image;
+    
+}
+]]></programlisting>
+        <para>
+            A program fordítása és futtatása pedig így tehető meg:
+        </para>
+        <screen>
+gyula@gyula-X550JK:~/Documents/prog2/chomsky$ g++ mlp.hpp perceptron.cpp -o perc -lpng
+gyula@gyula-X550JK:~/Documents/prog2/chomsky$ ./perc mandel.png
+0.5
+gyula@gyula-X550JK:~/Documents/prog2/chomsky$ ./perc mandel.png
+0.504763
+        </screen>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Chomsky2/prec.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+</chapter>                
