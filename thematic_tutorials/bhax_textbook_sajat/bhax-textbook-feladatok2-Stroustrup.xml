@@ -1,0 +1,294 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Stroustrup!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>JDK osztályok</title>
+        <para>
+        Írjunk olyan Boost C++ programot (indulj ki például a fénykardból) amely kilistázza a JDK összes
+        osztályát (miután kicsomagoltuk az src.zip állományt, arra ráengedve)!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Stroustrup/jdk.cpp"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Stroustrup/jdk.cpp</filename></link> 
+        </para>
+
+        <para>
+            A mainben, először is megadjuk a mappa nevét, azaz srczip, a path metódusnak(p), majd
+            azt vizsgáljuk, a p-t, hogy létezik e egyáltalán, és könyvtár-e, (negált formában
+            végezzük az ellenőrzést). Amennyiben minden rendben van, jön a read_acts metódus
+            meghívása a p-re, melyet a fénykard feladatból szereztünk. Egy kis magyarázat a
+            readacts-hez, a readacts metódus argumentumként, egy path változót vár, lényegében a
+            metódus annyit csinál, hogy megnézi az elérési útból származó file kiterjesztését, hogy
+            .java-e? A vizsgálatot a !ext.compare(extension(path))) itt azért van a negálás, hogy az
+            if-nek a true ága fut le ugyanis a compare egyezésnél 0-t adna vissza. Aztán mivel a
+            path mappa, rekurzívan bejárjuk, amenyiben a file .java kiterrjesztésű, beteszi a
+            vectorba, a végén, a vectort bejárjuk, és az eltárolt file neveket kiírjuk + kiírjuk,
+            mennyi JDK osztályt találtunk.
+        </para>
+
+<programlisting language="C++"><![CDATA[
+#include <iostream>
+#include <vector>
+#include <boost/filesystem.hpp>
+using namespace std;
+using namespace boost::filesystem;
+int i;
+vector<path> v;  
+void read_acts (path p)
+    {
+ 
+    if (is_regular_file(p)) {
+        string ext (".java");
+  
+        if (!ext.compare(extension(p))) 
+        {
+        i++;
+        v.push_back(p); 
+        }
+        } else if (is_directory (p))
+            for (directory_entry & entry:directory_iterator(p))
+            read_acts (entry.path());  
+    }
+  
+int main(int argc, char *argv[])
+    {
+    /* cout << argc << "\n";
+    cout << *argv << "\n"; */
+     path p("srczip");
+    if(!exists(p) || !is_directory(p))
+        {
+            cout<<p<<"Valami nem oké a könyvtárral, próbáld újra!\n";
+            return 1;
+        }
+    read_acts(p);  
+    for(auto&& x : v)
+    cout << x.filename()<< endl;
+    cout << i << " JDK osztályt találtunk.\n";
+    }
+
+]]></programlisting>     
+
+        <para>
+            A program fordítása a következőképpen történik: <command> g++ jdk.cpp -o jdk -std=c++11 -lboost_system -lboost_filesystem </command>.
+        </para>
+        <para>
+            A futtatás követően pedig meg is listázza, valamint számolja, hogy mennyi JDK osztályt találtunk-
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Stroustrup/jdk.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+
+<section>
+        <title>Másoló-mozgató szemantika</title>
+        <para>
+            Kódcsipeteken (copy és move ctor és assign) keresztül vesd össze a C++11 másoló és a
+            mozgató szemantikáját, a mozgató konstruktort alapozd a mozgató értékadásra!
+        </para>
+
+
+
+        <para> 
+            Túlterheljük az egyenlőség operátort (|| típus operator op(paraméterlista); a
+            függvény automatikusan meghívódik, amikor az operátort egy meghatározott
+            szövegkörnyezetben használjuk). A mozgató értékadás: 
+        </para>
+        <programlisting language="c++"><![CDATA[
+BinRandTree & operator = (BinRandTree && old){
+    std::cout << "BT move assign" << std::endl;
+        
+    std::swap(old.root, root);
+    std::swap(old.treep, treep);
+
+    return *this;
+}
+]]></programlisting>
+        <para>Ez a binfának az a változata, ahol mutatóként tartalmazza a gyökeret. Ebben a
+            függvényben a két gyökérmutatót a swap függvényt, majd az aktuális objektumot térítjük
+            vissza a this segítségével hivatkozva rá. Mozgató konstruktort, az új objektum megkapja
+            a régi binfa gyökérpointerét, majd a régi objektum pointerét nullpointerré alakítjuk,
+            ezért nevezhetjük mozgatásnak, mert az új binfa megkapja a régi objektum elemeit a
+            jobbértékreferencia segítségével. (jobb/bal érték tisztázása - minden olyan kifejezés,
+            amelynek érték adható, balérték, minden olyan kifejezést, amit értékül adhatunk,
+            jobbérték)
+        </para>
+        <para>
+            Annak érdekében, hogy a mozgató konstruktor a mozgató értékadást használja,
+            alkalmaznunk kell a move függvényt:
+        </para>
+        <programlisting language="c++"><![CDATA[
+BinRandTree(BinRandTree && old){
+    std::cout << "BT move ctor" << std::endl;
+
+    root = nullptr;
+    *this = std::move(old);
+            ]]>
+        </programlisting>
+        <para>
+            Itt azt kell elérnúnk, az aktuális fa gyökerének kinullázása, move segítségével, ezáltal a
+            mozgató értékadás érvényesül. Ugyanis ekkor a swappel a mozgató értékadás megcseréli a
+            két fa gyökérmutatóját, így a az aktuális fa gyökere megkapja a régi fáét, a régi pedig
+            a nullpointerre lesz állítva. Így ez a változata a mozgató konstruktornak ugyanazt az
+            eredményt éri el, mint az eredeti változat.
+        </para>
+        <para> 
+            Mozgató szemantika, move függvénnyel, az argumentumként megadott értékből
+            jobbértékreferenciát készít, ami megfelelő paraméter a mozgató konstruktornak.
+        </para>
+    </section>
+
+    <section>
+        <title>Hibásan implementált RSA törése</title>
+        <para>
+            Készítsünk betű gyakoriság alapú törést egy hibásan implementált RSA kódoló:
+            <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_3.pdf"></link> (71-73 fólia) által
+            készített titkos szövegen.
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Stroustrup/RSA.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Stroustrup/RSA.java</filename></link>
+                              <link xlink:href="Stroustrup/RSAPelda.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Stroustrup/RSAPelda.java</filename></link> 
+        </para>
+        <blockquote><attribution>Wikipedia</attribution>
+        <para>
+        Az RSA-eljárás nyílt kulcsú (vagyis „aszimmetrikus”) titkosító algoritmus, melyet 1976-ban Ron Rivest, Adi Shamir és Len Adleman fejlesztett ki (és az elnevezést nevük kezdőbetűiből kapta). Ez napjaink egyik leggyakrabban használt titkosítási eljárása.[1] Az eljárás elméleti alapjait a moduláris számelmélet és a prímszámelmélet egyes tételei jelentik.
+        </para>
+        </blockquote>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Stroustrup/RSA.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>
+
+    <section>
+        <title>Változó argumentumszámú ctor</title>
+        <para>
+			Készítsünk olyan példát, amely egy képet tesz az alábbi projekt Perceptron osztályának bemenetére
+			és a Perceptron ne egy értéket, hanem egy ugyanakkora méretű „képet” adjon vissza. (Lásd még a 4
+			hét/Perceptron osztály feladatot is.)
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Stroustrup/preceptron.cpp"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Stroustrup/preceptron.cpp</filename></link>
+        </para>
+        <para>
+        	Először is a Benoît Mandelbrot nevéhez fűződő kétdimenziós halmaz png ábráját fogjuk létrehozni a mandel.cpp segítségével.
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Stroustrup/mandel.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+        <para>
+			A perceptron az egyik legegyszerűbb előrecsatolt neurális hálózat. 
+			A <filename>preceptron.cpp</filename> segítségével fogjuk szimulálni a hiba-visszaterjesztéses módszert, mely a többrétegű perceptronok (MLP) egyik legfőbb tanítási módszere.
+			Ahhoz, hogy ezt fordítani és futtatni tudjuk később, szükségünk lesz az <filename>mlp.hpp</filename> header filera, mely már tartalmazza a Perceptron osztályt.
+		</para>
+		<para>
+			Az előző program futtatásával létrejött Mandelbrot png ábrát fogjuk beimportálni.
+			A header filenak köszönhetően megadhatjuk a rétegek számát, illetve a neuronok darabszámát.
+			A beolvasásra kerülő kép piros részeit a lefoglalt tárba másoljuk bele.
+			A <filename>mandel.png</filename> alapján új képet állítunk elő, mely megkapja az eredeti kép magasságát és szélességét. A visszakapott értékeket megfeleltetjük a blue értékeknek.
+		</para>
+		<programlisting language="C++"><![CDATA[
+#include <iostream>
+#include "mlp.hpp"
+#include <png++/png.hpp>
+#include <fstream>
+
+int main (int argc, char **argv)
+{
+	png::image <png::rgb_pixel> png_image (argv[1]);
+	int size = png_image.get_width() *png_image.get_height();
+    
+	Perceptron* p = new Perceptron (3, size, 256, size);
+    
+	double* image = new double[size];
+    
+	for (int i {0}; i<png_image.get_width(); ++i)
+		for (int j {0}; j<png_image.get_height(); ++j)
+			image[i*png_image.get_width() +j] = png_image[i][j].red;
+            
+	double* newimage = (*p) (image);
+    
+    for (int i = 0; i<png_image.get_width(); ++i)
+		for (int j = 0; j<png_image.get_height(); ++j)
+			png_image[i][j].blue = newimage[i*png_image.get_width()+j];
+	
+    png_image.write("output.png");
+    
+	delete p;
+	delete [] image;
+}
+		]]></programlisting>
+
+		<para>
+			Az első felvonás Perceptron feladatához képest módosításokat kell végeznünk a header file-on is, ugyanis új képet akarunk előállítani.
+			A double pointer () operátor már egy tömböt térít vissza, melynek segítségével bele tudunk nyúlni a képbe.
+			Az utolsó units tömb értékei átkerülnek a paraméterként kapott tömbbe, az eredeti és az új kép egyforma méretű lesz.
+		</para>
+
+		<programlisting language="C++"><![CDATA[
+double* operator() ( double image [] )
+  {
+
+    units[0] = image;
+
+    for ( int i {1}; i < n_layers; ++i )
+      {
+
+#ifdef CUDA_PRCPS
+
+        cuda_layer ( i, n_units, units, weights );
+
+#else
+
+        #pragma omp parallel for
+        for ( int j = 0; j < n_units[i]; ++j )
+          {
+            units[i][j] = 0.0;
+
+            for ( int k = 0; k < n_units[i-1]; ++k )
+              {
+                units[i][j] += weights[i-1][j][k] * units[i-1][k];
+              }
+
+            units[i][j] = sigmoid ( units[i][j] );
+
+          }
+
+#endif
+
+      }
+
+    for (int i = 0; i < n_units[n_layers - 1]; i++)
+        image[i] = units[n_layers - 1][i];
+    
+    return image;
+
+  }
+  		]]></programlisting>
+
+		<para>
+			A fordításhoz a C++14 szabványt használjuk, futtatáskor pedig megadjuk annak a képfájlnak a nevét és kiterjesztését, amelyet be kívánunk olvasni 
+			(a <filename>mandel.cpp</filename>-ből kapott <filename>mandel.png</filename> ábra).
+		</para>
+	
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Stroustrup/mandelctor.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+    </section>
+
+</chapter>
