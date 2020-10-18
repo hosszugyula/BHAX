@@ -1,0 +1,286 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gödel!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+<section>
+        <title>Gengszterek</title>
+        <para>
+            Megoldás forrása: <link xlink:href="Gödel/">bhax/thematic_tutorials/bhax_textbook_sajat/Gödel/myshmclient.cpp</link>
+        </para>
+
+        <para>
+            Az OOCWC (Robocar World Championship) egy páréves platform, melynek célja volt a forgalomirányítási algoritmusok kutatása és a robotautók terjedésének vizsgálata.
+            A Robocar City Emulator lehetővé tette volna fejlesztők számára új modellek és elméletek tesztelését.
+            A debreceni Justine prototípus gengsztereinek rendezése volt ezúttal a feladat: ehhez először le kell rántanunk a <link xlink:href="https://github.com/nbatfai/robocar-emulator">GitHub projektet</link>.
+        </para>
+
+        <para>
+            A C++11-ben megjelenő lambda kifejezések lehetővé teszik, hogy egy- vagy többsoros névtelen függvényeket definiáljunk a forráskódban.
+            Szerkezetük nem kötött.
+        </para>
+
+<para>Általános alakja:
+
+<programlisting language="C++"><![CDATA[
+[](int x, int y) { return x + y; }]]>
+</programlisting>
+
+A szögletes zárójelpár jelzi, hogy lambda kifejezés következik.
+A kerek zárójelpár a függvényhívást jelenti.
+Ezután jön a függvény törzse, mely return utasításából a fordító meghatározza a függvény értékét és típusát.
+
+</para>
+
+<para>
+A <filename>myshmclient.cpp</filename>-ben a gangsters vektort rendezzük lambda kifejezéssel.
+Ha x gengszter közelebb van az elkapott cop objektumhoz, mint y gengszter, akkor igaz értéket ad vissza.
+Rendezés után így a vektor elejére a rendőrhöz legközelebb álló gengszterek kerülnek.
+</para>
+
+<programlisting language="C++"><![CDATA[
+std::sort (gangsters.begin(), gangsters.end(), [this, cop] (Gangster x, Gangster y)
+{
+    return dst (cop, x.to) < dst (cop, y.to);
+});
+
+//void sort (RandomAccessIterator first, RandomAccessIterator last, Compare comp);]]>
+</programlisting>
+    </section>
+
+
+
+<section>
+        <title>STL map érték szerinti rendezése</title>
+        <para>
+            Például: <link xlink:href = "https://github.com/nbatfai/future/blob/master/cs/F9F2/fenykard.cpp#L180"></link> 
+        </para>
+        <para>
+            A <link xlink:href="https://github.com/nbatfai/future">FUTURE projekt</link> <filename>fenykard.cpp</filename> fájljában a sort függvényt használjuk a map érték szerinti rendezésére.
+        </para>
+        <para>
+            A mapoknak két tagjuk van (most string és int), ezeket rendeljük hozzá egy pair vektorhoz, és ezt követően rendezünk.
+            Érték szerint csökkenő sorrendben történik a rendezés (p1.second és p2.second használatával). 
+            A nagyobb elemek lesznek elől, ugyanis ha az első pair érték nagyobb, akkor igazzal tér vissza a függvény.
+        </para>
+
+<programlisting language="C++"><![CDATA[
+std::vector<std::pair<std::string, int>> sort_map ( std::map <std::string, int> &rank )
+{
+        std::vector<std::pair<std::string, int>> ordered;
+
+        for ( auto & i : rank ) {
+                if ( i.second ) {
+                        std::pair<std::string, int> p {i.first, i.second};
+                        ordered.push_back ( p );
+                }
+        }
+
+        std::sort (
+                std::begin ( ordered ), std::end ( ordered ),
+        [ = ] ( auto && p1, auto && p2 ) {
+                return p1.second > p2.second;
+        }
+        );
+
+        return ordered;
+}
+]]></programlisting>
+    </section>
+
+<section>
+        <title>Alternatív Tabella rendezése</title>
+        <para>
+            Mutassuk be a <link xlink:href = "https://progpater.blog.hu/2011/03/11/alternativ_tabella"></link> a programban a java.lang
+            Interface Comparable T szerepét!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Gödel/AltTabella.cpp">bhax/thematic_tutorials/bhax_textbook_sajat/Gödel/AltTabella.cpp</link>
+                              <link xlink:href="Gödel/Wiki2Matrix.cpp">bhax/thematic_tutorials/bhax_textbook_sajat/Gödel/Wiki2Matrix.cpp</link>
+        </para>
+        <para>
+            Az alternatív tabella a Google algoritmusán, a PageRank-en alapszik.
+            A PageRank alapötlete, hogy azok a weblapok jobb minőségűek, amelyekre jobb minőségű lapok mutatnak.
+            Jelen esetben az foglal előkelőbb helyet a labdarúgó bajnokságon, aki előkelőbb helyen lévő csapatoktól szerez pontot.
+        </para>
+        <para>
+            A táblázatban lévő eredményeket a kereszt nevű kétdimenziós tömbbe dobjuk bele a Wiki2Matrix osztályban.
+            Vegyük például a 2010-11-es magyar labdarúgó bajnokság első osztályának eredményeit. Az üres legyen 0, a zöld 1, a sárga 2, a piros pedig 3.
+            A példa alapján a mátrixba tehát a következő értékek kerülnek:
+        </para>
+<programlisting language="Java"><![CDATA[
+int[][] kereszt = {
+      {0, 0, 0, 1, 0, 3, 2, 3, 3, 2, 0, 0, 0, 2, 2, 3},
+      {3, 0, 2, 1, 3, 2, 0, 3, 3, 3, 0, 0, 0, 0, 0, 1},
+      {1, 1, 0, 0, 3, 1, 3, 0, 0, 0, 3, 1, 1, 0, 2, 0},
+      {0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 2, 1, 1},
+      {3, 3, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0},
+      {1, 0, 3, 1, 0, 0, 0, 1, 3, 2, 0, 0, 0, 1, 2, 3},
+      {0, 2, 0, 0, 0, 1, 0, 1, 1, 0, 3, 0, 1, 3, 3, 1},
+      {0, 0, 1, 1, 3, 0, 0, 0, 0, 1, 3, 1, 1, 1, 3, 0},
+      {0, 0, 1, 2, 3, 0, 0, 1, 0, 0, 0, 2, 1, 1, 3, 1},
+      {0, 1, 1, 2, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1, 3, 3},
+      {2, 3, 0, 2, 1, 1, 0, 0, 1, 2, 0, 1, 0, 0, 0, 2},
+      {3, 3, 0, 0, 0, 3, 3, 0, 2, 1, 1, 0, 2, 0, 0, 0},
+      {1, 2, 0, 1, 0, 2, 1, 0, 0, 1, 3, 1, 0, 0, 0, 2},
+      {2, 1, 2, 0, 1, 2, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0},
+      {1, 3, 1, 0, 2, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0},
+      {0, 0, 1, 0, 1, 0, 3, 1, 1, 0, 0, 1, 2, 1, 3, 0}
+    };
+]]></programlisting>
+        <para>
+            A fordítás és futtatás után kapott új értékeket az AlternatívTabella osztályba kell belehelyezni, a <![CDATA[double[][] Lnk = {}]]> rész kapcsos zárójelei közé.
+            Az eredetinev tömbbe kerülnek a csapatok nevei a táblázatban való megjelenésük alapján.
+            Az eredetipont tömbbe az eredeti tabella pontjait írjuk be.
+            Készítünk egy ujnev tömböt is, melybe a Wiki2Matrix kereszt nevű mátrixa alapján létrejött sorrend szerint kerülnek be a csapatok.
+        </para>
+
+<programlisting language="Java"><![CDATA[
+        double[][] Lnk = {
+                { 0.0, 0.08333333333333333, 0.0, 0.1111111111111111,
+                        0.14285714285714285, 0.0, 0.1111111111111111, 
+                        ...,
+                        0.15384615384615385, 0.08333333333333333, 0.0, 0.0, } };
+
+        String[] eredetinev = { "Videoton", "Ferencvaros", "Paks",
+                "Debreceni VSC", "Zalaegerszegi TE", "Kaposvari Rakoczi",
+                "Lombard Papa", "Kecskemeti TE", "Ujpest", "Gyori ETO",
+                "Budapest Honved", "MTK Budapest", "Vasas",
+                "Szombathelyi Haladas", "BFC Siofok", "Szolnoki MAV" };
+                
+        int[] eredetipont = { 40, 34, 31, 31, 30, 29, 27, 24, 23, 23, 22, 22,
+                21, 20, 18, 9 };
+                
+        String[] ujnev = { "BFC Siofok", "Budapest Honved", "Vasas",
+                "Debreceni VSC", "Ferencvaros", "Gyori ETO",
+                "Kaposvari Rakoczi", "Kecskemeti TE", "Lombard Papa",
+                "MTK Budapest", "Paksi FC", "Szolnoki MAV FC",
+                "Szombathelyi Haladas", "Ujpest", "Videoton",
+                "Zalaegerszegi TE" };
+]]></programlisting>
+        <para>
+            Az alternatív tabella értékeinek összehasonlításához, rendezéséhez igénybe vesszük a java.lang package Comparable interfészét.
+            Az interface lehetővé teszi, hogy képések legyünk alkalmazni a listákra és tömbökre definiált függvényeket.
+            A compareTo metódus a paraméterként megadott objektumot hasonlítja össze az aktuális objektummal.
+            Háromféle értéket adhat vissza: pozitív, negatív számot (attól függően, hogy a jelenlegi objektum nagyobb vagy kisebb-e) vagy nullát (egyenlőség esetén).
+        </para>
+<programlisting language="Java"><![CDATA[
+class Csapat implements Comparable<Csapat> {
+
+    private String nev = "Nincs";
+    private double ertek = '0';
+
+    public Csapat(String nev, double ertek) {
+        this.setNev(nev);
+        this.setErtek(ertek);
+    }
+
+    public int compareTo(Csapat a) {
+        if (this.getErtek() < a.getErtek()) {
+            return 1;
+        } else if (this.getErtek() > a.getErtek()) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+}
+]]></programlisting>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Gödel/altabella.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+    </section>
+
+<section>
+        <title>C++11 Custom Allocator</title>
+        <para>
+            <link xlink:href = "https://prezi.com/jvvbytkwgsxj/high-level-programming-languages-2-c11-allocators/"></link> a
+            CustomAlloc-os példa, lásd C forrást az UDPROG repóban!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Gödel/customalloc.cpp">bhax/thematic_tutorials/bhax_textbook_sajat/Gödel/customalloc.cpp</link>
+        </para>
+        <para>
+            Első sorban <command> #include</command>-oljuk a megfelelő header-öket.
+        </para>
+<programlisting language="C"><![CDATA[
+#include <iostream>
+#include <string>
+#include <vector>
+]]></programlisting>
+    
+        <para>
+            Ezután létrehozunk egy template osztályt és index-eljük a következő dolgokat.
+        </para>
+<programlisting language="C"><![CDATA[
+template<typename T>
+    class CustomAlloc{
+    
+        public:
+            using size_type = size_t;
+            using pointer = T*;
+            using const_pointer = const T*;
+            using value_type = T;
+]]></programlisting>
+    
+        <para>
+            Lefoglalunk n-darabot a size_type-nak. Ezután kiiratjuk, hogy foglalunk n darab objektumot, valamint hogy mennyi byte-ot az n*sizeof(value_type)-nak. Végül pedig visszaadjuk a lefoglalt memóriát, char-al foglalok n*sizeof(value_type) byte-ot
+        </para>
+<programlisting language="C"><![CDATA[
+pointer allocate(size_type n){ 
+            
+            std::cout <<"Allocating " << n << " object of " << n*sizeof(value_type) << std::endl; 
+            
+        return reinterpret_cast<pointer>( new char [n*sizeof(value_type)]); 
+        }
+]]></programlisting>
+    
+        <para>
+            Elsősorban megadjuk neki a pointert és hogy mennyit szabadítson fel. Mivel tömbösen foglaltam, ezért tömbösen is törlöm a p pointert.
+        </para>
+<programlisting language="C"><![CDATA[
+void deallocate(pointer p, size_type n){ 
+            
+            std::cout <<"Deallocating " << n << " object of " << n*sizeof(value_type) << std::endl;
+            
+            delete [] reinterpret_cast<char *>(p); 
+        }
+]]></programlisting>
+
+        <para>
+            Ezután létrehozzuk a <function> main </function> függvényünket. Inteket rakunk bele a vektorunkba, megadjuk neki, hogy használja  ami CustomAlloc-unkat. Végül pedig v-be bele push_back-elem a számunkat.
+    
+        </para>
+<programlisting language="C"><![CDATA[
+int main(){
+    
+    std::string s;
+    std::allocator<int> a;
+    
+    std::vector<int, CustomAlloc<int>> v; 
+
+    v.push_back(42); 
+    v.push_back(42);
+    v.push_back(46);
+
+    return 0;
+}
+]]></programlisting>
+    <para>
+        A program fordítását és futtatását követőel pedig látjuk hogy alloce-álja elsőnek a 4-et, majd a 8-at. A program végén pedig dealloce-álja a 4-et, majd a 8-at.
+    </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./Gödel/alloc.png" format="PNG" />
+            </imageobject>
+        </mediaobject>
+
+
+    </section>
+
+</chapter>
