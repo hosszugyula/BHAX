@@ -1,0 +1,274 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Lauda !</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+<section>
+        <title>Port scan</title>
+        <para>
+            Mutassunk rá ebben a port szkennelő forrásban a kivételkezelés szerepére!
+            <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287</link>
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="Lauda/KapuSzkenner.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Lauda/KapuSzkenner.java</filename></link>
+        </para>
+
+    <mediaobject>
+        <imageobject>
+            <imagedata fileref="./Lauda/abra.png" format="PNG" />
+        </imageobject>
+    </mediaobject>
+
+<programlisting language="Java"><![CDATA[
+public class KapuSzkenner {
+    
+    public static void main(String[] args) {
+        
+        for(int i=0; i<1024; ++i)
+            
+            try {
+                
+                java.net.Socket socket = new java.net.Socket(args[0], i);
+                
+                System.out.println(i + " figyeli");
+                
+                socket.close();
+                
+            } catch (Exception e) {
+                
+                System.out.println(i + " nem figyeli");
+                
+            }
+    }
+                        
+}
+]]></programlisting>
+
+        <para>
+            A program végigzongorázza a parancssorában megkapott nevű gép 1024 alatti számú TCP kapuit: megpróbál egy TCP kapcsolatot
+<programlisting language="Java"><![CDATA[
+    java.net.Socket socket = new java.net.Socket(args[0], i);
+]]></programlisting>
+            létrehozni, ha sikerül, akkor a célporton ül egy szerver folyamat, ha nem, azaz ha kivétel keletkezik, akkor nem. Egyébként siker esetén sem csinálunk semmit, hanem csak bezárjuk az éppen elkészített kliensoldali kommunikációs végpontot reprezentáló socket objektumot.
+        </para>
+
+    <mediaobject>
+        <imageobject>
+            <imagedata fileref="./Lauda/kapuszkenner.png" format="PNG" />
+        </imageobject>
+    </mediaobject>
+
+    </section>
+
+    <section>
+        <title>AOP</title>
+        <para>
+            Megoldás forrása:  <link xlink:href="Lauda/HellóVilág.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Lauda/HellóVilág.java</filename></link>
+        </para>
+
+		<para>
+		Forrás: <link xlink:href="http://nyelvek.inf.elte.hu/leirasok/AspectJ/index.php?chapter=1">Prognyelvek portál</link>
+		</para>
+
+	<para>
+	Az AOP (aspektusorientált programozás) az AspectJ nyelv segítségével valósul meg.
+	Ez a programozási nyelv lehetővé teszi már megírt Java kódok használatát, egységesítését.
+	</para>
+
+	<para>	
+	Az AspectJ vezette be a join point (csatlakozási pont) fogalmát is, mely a kereszthivatkozások helyeinek definiálásáért felelős.
+	A pontok segítségével meg tudjuk tehát határozni, hogy mely sorok nincsenek fizikailag elszeparálva saját modulba.
+	Dinamikus join pointok lehetnek pl. metódus vagy konstruktor hívások, osztály vagy objektum inicializálása.
+	</para>
+
+	<para>
+	A pointcut (vágási pont) a csatlakozási pontok és a hozzájuk tartozó értékek kiválogatásáért felel.
+	Vágási pontból operátorok segítségével (pl. <![CDATA[||]]>) tudunk újakat is létrehozni.
+	</para> 
+
+	<para>
+	Az egyes vágási pontokhoz kódot is rendelhetünk adviceok (tanácsok) által.
+	AspectJ-ben a before advice a csatlakozási pont végrehajtása előtt fut le, az after advice pedig a csatlakozási pont után.
+	Az around advice akkor hajtódik végre, ha a join pointot eléri a végrehajtás.
+	</para>
+        
+	<para>
+	Hozzunk létre egy <function>helló</function> függvényt, melyben a köszönő line előtt szerepel egy alma, utána pedig egy körte string.
+	Ha ezt futtatjuk, akkor mindhárom sor kiiratásra kerül. 
+
+	<programlisting language="Java"><![CDATA[
+public class HellóVilág {
+    public void helló() {
+        System.out.println("alma");
+        System.out.println("HelloVilag> Hello!");
+        System.out.println("korte");
+    }
+
+    public static void main(String[] args) {
+        new HellóVilág().helló();
+    }
+}]]>
+	</programlisting>
+    
+    Biztonság kedvéért futtassuk le:
+    <programlisting><![CDATA[
+$ javac HellóVilág.java
+$ java HellóVilág
+alma
+HelloVilag> Hello!
+korte]]>
+    </programlisting>
+	</para>
+
+	<para>
+	A csatlakozási pontunk tehát az eredeti Java kódban már szerepel.
+	A vágási pontunk az AspectJ kódban lesz, ez fogja meghívni a <function>helló</function> függvényünket.
+	A before advice által az alma, az after advice által pedig a körte kerülhet kiiratásra.
+
+	<programlisting language="Java"><![CDATA[
+public aspect ElőtteUtána {
+    public pointcut fgvHívás(): call(public void HellóVilág.helló());
+
+    before(): fgvHívás() {
+        System.out.println("ElotteUtana> Alma");
+    }
+        
+    after(): fgvHívás() {
+        System.out.println("ElotteUtana> Korte");
+    }
+}]]>
+	</programlisting>
+    
+    Fordítás és futtatás után:
+    <programlisting><![CDATA[
+$ ajc HellóVilág.java ElőtteUtána.aj 
+$ java HellóVilág
+ElotteUtana> Alma
+HelloVilag> Hello!
+ElotteUtana> Korte]]>    
+    </programlisting>
+    </para>
+
+	<para>
+	Az eredeti Java kódban található csatlakozási pontok sor szerinti elhelyezkedését is megkaphatjuk a getSourceLocation() metódus segítségével.
+	A getKind()-nak köszönhetően a join point fajtáját is kiirathatjuk (pl. metódushívás).
+	A getSignature() pedig visszaadja a sorban található értéket.
+
+	<programlisting language="Java"><![CDATA[
+public aspect Nagytesó {
+    before(): call(* *(..)) && !cflow(adviceexecution()) {
+        System.out.println("Nagyteso> " + thisJoinPointStaticPart.getSourceLocation());
+        System.out.println("Nagyteso> " + thisJoinPointStaticPart.getKind());
+        System.out.println("Nagyteso> " + thisJoinPointStaticPart.getSignature());
+    }
+}]]>
+	</programlisting>
+	</para>
+
+	<para>
+	A <filename>HellóVilág.java</filename> alapján tehát a következőket kapjuk:
+	<programlisting><![CDATA[
+$ ajc HellóVilág.java Nagytesó.aj
+$ java HellóVilág	
+Nagyteso> HellóVilág.java:13
+Nagyteso> method-call
+Nagyteso> void HellóVilág.helló()
+Nagyteso> HellóVilág.java:5
+Nagyteso> method-call
+Nagyteso> void java.io.PrintStream.println(String)
+alma
+Nagyteso> HellóVilág.java:7
+Nagyteso> method-call
+Nagyteso> void java.io.PrintStream.println(String)
+HelloVilag> Hello!
+Nagyteso> HellóVilág.java:8
+Nagyteso> method-call
+Nagyteso> void java.io.PrintStream.println(String)
+korte]]>
+	</programlisting>
+	</para>
+
+    </section>
+
+       <section>
+        <title>JUnit teszt</title>
+        <para>
+            Megoldás forrása: <link xlink:href="Lauda/BinfaTest.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/Lauda/BinfaTest.java</filename></link>
+        </para>
+        
+		<para>
+		Forrás: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0103_21_programozasi_technologiak/ch03s02.html">Programozási technológiák</link>
+		</para>
+		
+		<para>
+		A JUnit egy egységtesztelő keretrendszer, amellyel ellenőrizhetjük, hogy az általunk leprogramozott kód az elvárások szerint működik-e.
+		A tényleges és elvárt eredmény közötti összehasonlítás állítások (assertions) segítségével történik.
+		Az assertEquals az equals metódus alapján megvizsgálja, hogy a két eredmény megegyezik-e vagy sem.		
+		</para>
+
+		<para>
+            A <link xlink:href="https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat">ProgPater blogbejegyzés</link> tesztsorozata alapján végezzük el a JUnit tesztet, ez a string bitenként kerül feldolgozásra a <filename>BinfaTest</filename> for ciklusában (az LZWBinFa Java átirata alapján).
+            Az assertEquals metódus első paramétere a várt érték lesz, tehát ide a papíron kapott mélység-, átlag- és szórásértékeket kell megadnunk.
+            Ezután meghívjuk a Java átirat getMelyseg, getAtlag és getSzoras függvényeit, melyek így szintén a tesztsorozat bitjeivel fognak dolgozni.
+            Mivel a szórásra pontosabb eredményt adhat a függvény, ezért megadjuk a lehetséges deltányi eltérést is.
+            
+		<programlisting language="Java"><![CDATA[
+package binfa;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+class BinfaTest {
+
+	LZWBinFa binfa = new LZWBinFa();
+	
+	@Test
+	void test() {
+		for (char c: "011110010010010000111".toCharArray()) {
+			binfa.egyBitFeldolg(c);
+		}
+		
+		assertEquals(4, binfa.getMelyseg());
+		assertEquals(2.75, binfa.getAtlag());
+		assertEquals(0.957427, binfa.getSzoras(), 0.0001);
+	}
+
+}]]>
+		</programlisting>
+		</para>
+        
+        <para>
+        A JUnit teszt elvégzéséhez én az Eclipse Marketplace-ről letölthető JUnit-Tools plugint használtam.
+        Mivel megegyeztek az értékek, ezért sikeresen le is futott:
+        
+        <mediaobject>
+        <imageobject>
+        <imagedata fileref="./Lauda/teszt.png" format="PNG"/>
+        </imageobject>
+        </mediaobject>
+        
+    </para>
+    </section>
+
+<section>
+        <title>EPAM: Kivételkezelés</title>
+        <para>
+            Adott az alábbi kódrészlet. Mi történik, ha az input változó 1F, “string” vagy pedig null? Meghívódik
+			e minden esetben a finally ág? Válaszod indokold!
+        </para>
+
+    <mediaobject>
+        <imageobject>
+            <imagedata fileref="./Lauda/feladat.png" format="PNG" />
+        </imageobject>
+    </mediaobject>
+
+
+
+    </section>
+
+</chapter>

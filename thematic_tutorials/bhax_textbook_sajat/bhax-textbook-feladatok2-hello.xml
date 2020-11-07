@@ -1,0 +1,307 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, !</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+<section>
+        <title>FUTURE tevékenység editor</title>
+        <para>
+            Megoldás forrása: <link xlink:href="hello/ActivityEditor.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/hello/ActivityEditor.java</filename></link>
+        </para>
+
+<para>
+    A <link xlink:href="https://github.com/nbatfai/future">FUTURE projekt</link> eredeti célja az egyes játékosok és ezáltal egy város alternatív jövőinek legenerálása, a legenerált jövők elemzése volt.
+    A FUTURE6-hoz készült egy tevékenység/tulajdonság editor, melyben a hallgatók az adott nap tevékenységeit tudták összegezni, feljegyezni.
+</para>
+
+<para>
+Az <filename>ActivityEditor</filename> futtatásához a következő lépéseket kell megtennünk a terminálban:
+
+<programlisting><![CDATA[
+$ git clone https://github.com/nbatfai/future.git
+$ cd future/cs/F6
+$ javac ActivityEditor.java
+$ java ActivityEditor --city=Debrecen --props=me.props,gaming.props,programming.props]]>
+</programlisting>
+</para>
+
+<para>
+Az editor külső megjelenése könnyen feldobható egy CSS stíluslap készítésével.
+Ahhoz, hogy a stíluslapban található tulajdonságok és értékek megjelennek az editoron, ki kell bővítenünk a kódot:
+
+<programlisting language="Java"><![CDATA[
+public class ActivityEditor extends javafx.application.Application {
+    private static String path;
+    public static void main(String[] args) {
+
+    path="style.css";
+        javafx.application.Application.launch(args);
+    }]]>
+</programlisting>
+</para>
+
+<para>
+Az editor dobozainak fő háttérszíne világoszöld lesz, melyhez véleményem szerint jól passzol az, ha a tevékenységek és tulajdonságok szövege erős, sötétkék színt kap.
+Ha rákattintunk egy dobozra, akkor annak szegélye is sötétkékké válik, de ennek hex kódja némiképp különbözik a korábban említett text fill értéktől.
+A címkék kaptak egy halványszürke hátteret, így egy kicsit jobban kiemelkednek a címkékben olvasható szövegek.
+
+<programlisting><![CDATA[
+.tree-cell{
+    -fx-background-color: #8ed49d;
+    -fx-text-fill: #2200ff;
+}
+
+.vbox{
+    -fx-background-color: #2f00ff;
+}
+
+.label{
+    -fx-text-fill: #2f00ff;
+    -fx-background-color: #eee9e1;
+}
+
+.content{
+    -fx-background-color: #8ed49d;
+}]]>
+</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="./hello/future.png" format="PNG" />
+</imageobject>
+</mediaobject>
+
+</para>
+    </section>
+
+
+<section>
+    <title>OOCWC Boost ASIO hálózatkezelése</title>
+        <para>
+            Mutassunk rá a scanf szerepére és használatára! https://github.com/nbatfai/robocar-
+            emulator/blob/master/justine/rcemu/src/carlexer.ll
+        </para>
+        <para>
+            Eza feladat egy inputstream adatainak feldolgozását mutatja be, ezáltal
+            megismerkedhetünk a streamekkel.
+        </para>
+<programlisting language="java">
+    <![CDATA[
+        while ( std::sscanf ( data+nn, "<OK %d %u %u %u>%n", &idd, &f, &t, &s, &n ) == 4 )
+        {
+            nn += n;
+            gangsters.push_back ( Gangster {idd, f, t, s} );
+        } 
+]]></programlisting>
+        <para>
+            Az sscanf formázott stringből olvas be, itt azért van szükség erre a whilera mert nem
+            tudjuk pontosan hány gengster adatot tudunk beolvasni, ezért ellenőrini kell az adatok
+            érvényességét. A whileban a sscanf visszatérési értékét (beolvasott paraméterek száma),
+            és a négyet hasonlítjuk össze, azaz ha ez az egyenlőség igaz, minden gangster adatát
+            sikresen beolvastuk. Létrehozunk egy üj gangster objektumot, amit bele rakunk a gangster
+            vectorba, az nn változó az eddig beolvasott adatok számát tárolja, erre a data karakter
+            tömb miatt van szükség, hogy ne olvassuk be belőlle kétszer ugyan azt az adatot.
+        </para>
+    </section>
+
+<section>
+    <title>BrainB</title>
+        <para>
+            Mutassuk be a Qt slot-signal mechanizmust ebben a projektben:
+            https://github.com/nbatfai/esport- talent-search
+        </para>
+        <para>
+            A BrainBvel már foglalkoztunk, ez egy olyan program ami azt szimulálja mikor egy játék
+            közben nagy a katyvasz, és szinte eltűnik a karakterünk, a szimuláció 10 percnyi időn
+            belül teszteli mennyire tudjuk követni a Samu Entropy négyzetet, a futás végén kapunk
+            egy statisztikát.
+        </para>
+        <para>
+            Használata:
+        </para>
+        <programlisting language="java">
+            <![CDATA[
+            sudo apt-get install libqt4-dev
+            sudo apt-get install opencv-data
+            sudo apt-get install libopencv-dev
+            
+            qmake BrainB.pro
+            make
+            ./BrainB
+        ]]></programlisting>
+
+        <para>
+            Most tekintsük meg a slot-signal mechanizmust, Qt-ban a slot-signal mechanizmust,
+            objektumok közöti kommunikációra lehet használni. Egy slot akkor hívódik meg amikor egy
+            signal bekövetkezik, a signal pedig akkor következik be, ha egy bizonyos esemény
+            bekövetkezik, ezzel elkerülődik a cross reference, mivel nem kell egy osztályon belül
+            egy másik osztályt meghívni. A slotok a signalokhoz, connect függvénnyel kapcsolódnak
+            (szignaturáiknak meg kell egyezniük), itt két connectet figyelhetünk meg.
+        </para>
+
+<programlisting language="java">
+            <![CDATA[
+     connect ( brainBThread, SIGNAL ( heroesChanged ( QImage, int, int ) ),
+    this, SLOT ( updateHeroes ( QImage, int, int ) ) );
+    connect ( brainBThread, SIGNAL ( endAndStats ( int ) ),
+    this, SLOT ( endAndStats ( int ) ) );
+]]></programlisting>
+
+        <para>
+            Azt jelenti, hogya brainBthread-ben a heroesChanged signal bekövetkezik akkor lefut a
+            BrainBWin update-Heroes függvénye, endAndStats esetén ugyanígy, ami a futási idő
+            lejártakor következik be, aminek köszönhetően, kiiródik a debug üzenet, hogy vége a
+            játéknak:
+        </para>
+
+        <programlisting language="java">
+            <![CDATA[
+        void BrainBThread::run()
+        {
+            while ( time < endTime ) {
+            QThread::msleep ( delay );
+            if ( !paused ) {
+                ++time;
+                devel();
+            }
+            draw();
+        }
+        emit endAndStats ( endTime );
+        }
+]]></programlisting>
+
+        <programlisting language="java">
+            <![CDATA[
+        void BrainBWin::endAndStats ( const int &t )
+        {
+            qDebug() << "\n\n\n";
+            qDebug() << "Thank you for using " + appName;
+            qDebug() << "The result can be found in the directory " + statDir;
+            qDebug() << "\n\n\n";
+            
+            save ( t );
+            close();
+        }
+]]></programlisting>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./hello/BB.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+
+    <section>
+        <title>Android "GPS tracker"</title>
+        <para>
+            Megoldás forrása: <link xlink:href="hello/MapsActivity.java"><filename>bhax/thematic_tutorials/bhax_textbook_sajat/hello/MapsActivity.java</filename></link>
+        </para>
+
+        <para>
+            Forrás: <link xlink:href="https://programmerworld.co/android/design-a-location-tracking-app-using-gps-in-android-studio/">
+            ProgrammerWorld</link>
+        </para>
+
+        <para>
+            Az OSM térképre rajzolása helyett én a Google Maps alapú Android "GPS tracker" elkészítését választottam.
+            Amennyiben Android Studio-val dolgozunk, érdemes Google Maps Activity projektet készítenünk, 
+            így azonnal kapunk egy működőképes, használható térképet.
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./hello/tracker.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+
+        <para>
+            Ahhoz, hogy tudjunk a Google Maps API-val dolgozni, kénytelenek leszünk a <filename>google_maps_api.xml</filename>-ben
+            található linkre ellátogatva egy API kulcsot generálni.
+            Amennyiben ez megvan, másoljuk be a következő sorba:
+
+<programlisting><![CDATA[
+<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">YOUR_KEY_HERE</string>]]>
+</programlisting>
+        </para>
+
+        <para>
+            Ha a Google Play szolgáltatások megfelelően vannak telepítve készülékünkre, akkor az app futtatása sikeres lesz.
+            A <filename>MapsActivity.java</filename> fájlban láthatjuk, hogy jelenleg a térképünkön még csak egy darab marker van,
+            amely Sydneyre mutat. A térkép bejárásától, illetve zoomolástól függetlenül is megmarad a meghatározott helyzetben a marker.
+
+<programlisting language="Java"><![CDATA[
+@Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }]]>
+</programlisting>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./hello/tracker2.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+
+        </para>
+
+        <para>
+            Ebből kiindulva alakítsuk át az appot úgy, hogy felismerje a tartózkodási helyünket, bizonyos időközönként frissítse azt, és jelezze újabb markerek elhelyezésével!
+        </para>
+
+        <para>
+            A frissítések közötti minimális időköz nálam 1 másodperc, míg a minimális távolság 5 méter.
+
+<programlisting language="Java"><![CDATA[
+private final long MIN_TIME = 1000;
+private final long MIN_DIST = 5;]]>
+</programlisting>
+
+            Ahhoz, hogy ne csak a .java fájlban megadott, fix szélességi/hosszúsági fokok alapján tudjunk markereket készíteni,
+            engedélyt kell kérnünk a felhasználótól.
+
+<programlisting language="Java"><![CDATA[
+ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PackageManager.PERMISSION_GRANTED);
+ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);]]>
+</programlisting>
+
+            A tartózkodási helyünkből kapott szélességi és hosszúsági fokot kihasználva hozunk létre új markereket, a korábban meghatározott frissítési gyakoriság alapján.
+
+<programlisting language="Java"><![CDATA[
+@Override
+            public void onLocationChanged(Location location) {
+
+                try {
+                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("Jelenlegi poziciom"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+                catch (SecurityException e){
+                    e.printStackTrace();
+                }
+
+            }]]>
+</programlisting>
+</para>
+
+        <para>
+            Amennyiben feltelepítettük a megfelelő <link xlink:href="https://developer.android.com/studio/run/oem-usb#Drivers">OEM USB Drivert</link> a telefonunkra,
+            csatlakoztatás esetén tudjuk is futtatni készülékünkön a GPS trackert.
+            Kis várakozást követően sikerült is felismernie tartózkodási helyemet:
+        </para>
+
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="./hello/tracker3.png" format="PNG"/>
+            </imageobject>
+        </mediaobject>
+    </section>
+
+
+
+</chapter>

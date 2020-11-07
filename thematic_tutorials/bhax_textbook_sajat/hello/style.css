@@ -1,0 +1,17 @@
+.tree-cell{
+	-fx-background-color: #8ed49d;
+	-fx-text-fill: #2200ff;
+}
+
+.vbox{
+	-fx-background-color: #2f00ff;
+}
+
+.label{
+	-fx-text-fill: #2f00ff;
+	-fx-background-color: #eee9e1;
+}
+
+.content{
+	-fx-background-color: #8ed49d;
+}
