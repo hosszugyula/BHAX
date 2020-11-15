@@ -258,17 +258,42 @@ class BinfaTest {
         <title>EPAM: Kivételkezelés</title>
         <para>
             Adott az alábbi kódrészlet. Mi történik, ha az input változó 1F, “string” vagy pedig null? Meghívódik
-			e minden esetben a finally ág? Válaszod indokold!
+            e minden esetben a finally ág? Válaszod indokold!
         </para>
-
-    <mediaobject>
-        <imageobject>
-            <imagedata fileref="./Lauda/feladat.png" format="PNG" />
-        </imageobject>
-    </mediaobject>
-
-
-
+        <para>
+            Megoldás forrása: <link xlink:href="https://github.com/epam-deik-cooperation/epam-deik-prog2/tree/master/week-8/exception-handling">exception-handling</link>
+        </para>
+        <para>
+            A <function>test</function> függvényt null értékkel hívva a következő outputot kapjuk:
+        </para>
+        <programlisting><![CDATA[
+            Test case when input is null!
+            Try!
+            Exception is caught!
+            Finally!
+        ]]></programlisting>
+        <para>
+            Az else ág futott le, RuntimeException-t kaptunk, amit az Exception e catch kapott el.
+        </para>
+        <para>
+            Ha float-tal próbálkozunk, akkor az if rész fut le. ChildException-t dob a program.
+        </para>
+        <programlisting><![CDATA[
+            Test case when input is float!
+            Try!
+            Child Exception is caught!
+            Finally!
+        ]]></programlisting>
+        <para>
+            Ha String-et kap a <function>test</function> függvény, akkor a ParentException-t dob a program.
+            Az ezt kezelő catch-ben található egy System.exit(1); sor is, így a finally blokk nem fog lefutni ebben az esetben. 
+        </para>
+        <programlisting><![CDATA[
+            Test case when input is String!
+            Try!
+            Parent Exception is caught!
+        ]]></programlisting>
     </section>
+
 
 </chapter>
